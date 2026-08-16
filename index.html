@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kata Galaxisa - Epizód XXV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; color: #ffe81f; font-family: 'Orbitron', sans-serif; overflow: hidden; }
+        
+        #login-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #1a1a1a 0%, #000000 100%); z-index: 100; }
+        #login-screen h1 { font-size: 3rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 5px; text-align: center; }
+        #login-screen p { color: #fff; margin-bottom: 30px; font-family: 'Oswald', sans-serif; font-size: 1.2rem; text-align: center; max-width: 600px; }
+        #password-input { padding: 15px; font-size: 1.5rem; background: transparent; border: 2px solid #ffe81f; color: #ffe81f; text-align: center; font-family: 'Orbitron', sans-serif; outline: none; border-radius: 5px; margin-bottom: 20px; text-transform: uppercase; }
+        .btn { padding: 10px 30px; font-size: 1.2rem; background-color: #ffe81f; color: #000; border: none; cursor: pointer; font-family: 'Orbitron', sans-serif; font-weight: bold; border-radius: 5px; transition: all 0.3s; }
+        .btn:hover { background-color: #fff; box-shadow: 0 0 20px #fff; }
+        #login-error { color: #ff4444; margin-top: 15px; display: none; }
+
+        #crawl-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; overflow: hidden; z-index: 50; display: none; }
+        .fade { position: absolute; width: 100%; min-height: 40vh; top: 0; background-image: linear-gradient(0deg, transparent, black 75%); z-index: 51; }
+        .star-wars-container { display: flex; justify-content: center; position: relative; height: 100%; color: #ffe81f; font-family: 'Oswald', sans-serif; font-size: 200%; perspective: 400px; text-align: justify; }
+        .crawl { position: relative; top: 99999px; transform-origin: 50% 100%; width: 60%; margin: 0 auto; }
+        .crawl-title { text-align: center; margin-bottom: 50px; }
+        .crawl-title h1 { font-size: 2.5em; margin: 0; text-transform: uppercase; }
+        .crawl-title h2 { font-size: 1.5em; margin: 0; }
+        #skip-crawl-btn { position: absolute; bottom: 30px; right: 30px; z-index: 52; }
+
+        #game-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: none; }
+        canvas { display: block; }
+        #ui-layer { position: absolute; top: 20px; left: 20px; z-index: 15; pointer-events: none; }
+        .instruction { color: #fff; font-size: 1rem; background: rgba(0, 0, 0, 0.7); padding: 10px; border-radius: 5px; border: 1px solid #ffe81f; }
+        #interaction-prompt { position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%); font-size: 1.5rem; color: #fff; background: rgba(0, 0, 0, 0.8); border: 2px solid #ffe81f; padding: 10px 20px; border-radius: 10px; z-index: 15; display: none; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 232, 31, 0.7); } 50% { box-shadow: 0 0 10px 10px rgba(255, 232, 31, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 232, 31, 0); } }
+
+        #memory-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 80%; max-width: 700px; max-height: 80vh; background: rgba(10, 10, 10, 0.95); border: 2px solid #ffe81f; border-radius: 15px; z-index: 20; display: flex; flex-direction: column; padding: 30px; box-shadow: 0 0 50px rgba(255, 232, 31, 0.2); transition: transform 0.3s; color: #fff; }
+        #memory-modal.active { transform: translate(-50%, -50%) scale(1); }
+        #modal-close { position: absolute; top: 15px; right: 20px; font-size: 2rem; color: #ffe81f; cursor: pointer; }
+        #modal-title { font-size: 2rem; color: #ffe81f; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 15px; text-transform: uppercase; }
+        #modal-content-area { overflow-y: auto; margin-top: 20px; font-family: 'Oswald', sans-serif; font-size: 1.3rem; line-height: 1.6; padding-right: 15px; }
+        .planet-image { width: 100%; max-height: 300px; object-fit: cover; border-radius: 10px; margin: 15px 0; display: none; border: 1px solid #ffe81f; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <h1>Jedi Archívum</h1>
+        <p>A belépéshez add meg a galaxis legpusztítóbb varázsigéjét.</p>
+        <input type="password" id="password-input" placeholder="Jelszó">
+        <button class="btn" onclick="checkPassword()">Feloldás</button>
+        <div id="login-error">Hibás kód! Nem te vagy a kiválasztott.</div>
+    </div>
+
+    <div id="crawl-screen">
+        <div class="fade"></div>
+        <div class="star-wars-container">
+            <div id="crawl-text" class="crawl">
+                <div class="crawl-title">
+                    <h2>EPIZÓD XXV</h2>
+                    <h1>KATA GALAXISA</h1>
+                </div>
+                <p>A galaxis végtelen, de a peremvidéken túl létezik egy szektor, ami minden másnál különlegesebb. Negyedszázad telt el, és ez a világ pontosan olyanná formálódott, amilyen te vagy.</p><br>
+                <p>Ezt a rendszert azért hoztam létre, hogy megünnepeljem azt a lányt, akit 2008 óta ismerek. Azt az embert, akinek a lételeme a vita, és aki a vaksötét szobájában, egy pohár alsópolcos Frittmannal a kezében, rezzenéstelen arccal nézi végig a bedőlt dél-amerikai tippmixeket.</p><br>
+                <p>Imádjuk benned, hogy nem játszol szerepeket. Hogy képes vagy hajnalig vérre menő vitát folytatni egy közgáz érettségi megoldókulcsával arról, hogy a ruha márpedig nem létszükséglet, és hogy a szótáradban az 'AFFUERA' a legfelsőbb bírói ítélet.</p><br>
+                <p>Minden bolygó ebben a galaxisban egy-egy darabka a te zseniális furcsaságaidból.</p><br>
+                <p>Pattanj be a hajóba, és fedezd fel a saját univerzumodat!<br>May the 25th be with you!</p>
+            </div>
+        </div>
+        <button id="skip-crawl-btn" class="btn" onclick="startGame()">Tovább a hajóhoz &rarr;</button>
+    </div>
+
+    <div id="game-screen">
+        <div id="ui-layer">
+            <div class="instruction">
+                <strong>Irányítás:</strong> W A S D gombok<br>
+                <strong>Interakció:</strong> Repülj a bolygókhoz és nyomj 'E'-t!
+            </div>
+        </div>
+        <div id="interaction-prompt">Nyomd meg az 'E' gombot!</div>
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <div id="memory-modal">
+        <div id="modal-close" onclick="closeModal()">&times;</div>
+        <h2 id="modal-title">Bolygó neve</h2>
+        <div id="modal-content-area">
+            <img id="modal-image" class="planet-image" src="" alt="Kép">
+            <div id="modal-text"></div>
+            <!-- Ide rejtett audio lejátszó kerül -->
+            <audio id="modal-audio" controls style="width:100%; margin-top:20px; display:none;"></audio>
+        </div>
+    </div>
+
+    <script>
+        const correctPassword = "affuera"; 
+        
+        function checkPassword() {
+            const input = document.getElementById('password-input').value.toLowerCase().trim();
+            if(input === correctPassword) {
+                document.getElementById('login-screen').style.display = 'none';
+                startCrawl();
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+            }
+        }
+
+        let crawlAnimation;
+        function startCrawl() {
+            document.getElementById('crawl-screen').style.display = 'block';
+            const crawlText = document.getElementById('crawl-text');
+            let pos = window.innerHeight;
+            function animateCrawl() {
+                pos -= 0.7; 
+                crawlText.style.top = pos + 'px';
+                crawlText.style.transform = `rotateX(20deg) translateZ(${pos * -0.5}px)`;
+                if (pos > -2500) { crawlAnimation = requestAnimationFrame(animateCrawl); } 
+                else { startGame(); }
+            }
+            animateCrawl();
+        }
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let isGameRunning = false, isModalOpen = false, activePlanet = null;
+
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const keys = { w: false, a: false, s: false, d: false };
+        window.addEventListener('keydown', (e) => {
+            if(keys.hasOwnProperty(e.key.toLowerCase())) keys[e.key.toLowerCase()] = true;
+            if(e.key.toLowerCase() === 'e' && activePlanet && !isModalOpen) openModal(activePlanet);
+            if(e.key === 'Escape' && isModalOpen) closeModal();
+        });
+        window.addEventListener('keyup', (e) => {
+            if(keys.hasOwnProperty(e.key.toLowerCase())) keys[e.key.toLowerCase()] = false;
+        });
+
+        const player = { x: canvas.width / 2, y: canvas.height / 2 + 200, size: 20, speed: 6, angle: -Math.PI/2 };
+
+        const planets = [
+            {
+                id: 1, x: canvas.width * 0.2, y: canvas.height * 0.2, radius: 45, color: '#ff3333',
+                title: 'A Legfelsőbb Bíróság (Az AFFUERA szektor)',
+                img: '', audio: '',
+                text: 'Üdvözlünk a galaxis legkeményebb tárgyalótermében! Ide bárki beléphet egy jó vitára, a szabályok viszont egyértelműek: te vagy a bíró. Amikor megunsz egy érvelést, vagy olyat hallasz, ami nem tetszik, nincs fellebbezés. Csak lecsap a kalapács, és jön a végső ítélet: <strong>AFFUERA!</strong>'
+            },
+            {
+                id: 2, x: canvas.width * 0.8, y: canvas.height * 0.25, radius: 50, color: '#1a1a2e',
+                title: 'A Sötét Szoba (A Szentély)',
+                img: '', audio: '',
+                text: 'A béke szigete. Itt sosincs nappal, a sötétséget csak a PS5 és egy dél-amerikai teniszmeccs fénye töri meg. Amikor pedig elmegy a tutinak hitt Tippmix szelvény, nem repül a kontroller. Csak beáll a tökéletes, rezzenéstelen csend, miközben töltesz magadnak még egy pohár Frittmannt.'
+            },
+            {
+                id: 3, x: canvas.width * 0.3, y: canvas.height * 0.7, radius: 40, color: '#ffaa00',
+                title: 'A Törvényen Kívüli Ruházat (A Közgáz Lázadás)',
+                img: '', audio: '',
+                text: 'A véget nem érő viták hazája. A bolygó Alaptörvénye kimondja: *"A ruha NEM létszükséglet."* Hiába mond mást a hivatalos közgáz érettségi megoldókulcsa, te hajnalig képes vagy elvitatkozni azon, hogy a rendszer téved. Aki nem ért veled egyet, azt száműzik egy plázába.'
+            },
+            {
+                id: 4, x: canvas.width * 0.7, y: canvas.height * 0.75, radius: 45, color: '#aaddaa',
+                title: 'A Frittmann-köd (Az Akciós Zóna)',
+                img: '', audio: '',
+                text: 'Itt az olcsó a király. A felszínen kristálytiszta, alsópolcos Frittmann folyik a folyókban, és minden szigorúan akciós. Minek flancolni, ha a célnak ez is tökéletesen megfelel? Emeljük poharunkat a racionalitásra!'
+            },
+            {
+                id: 5, x: canvas.width / 2, y: canvas.height / 2, radius: 60, color: '#bb55ff',
+                title: 'A 25. Évforduló (2051 - A Jövő)',
+                img: '', audio: '',
+                text: '25 év múlva. A világ teljesen megváltozott... de te még mindig egy sötét szobában ülsz, fogadsz a brazil másodosztályra, és fapofával iszod a legolcsóbb fehérbort. A különbség csak annyi, hogy már a mesterséges intelligencia hologram-futárjára üvöltöd rá, hogy AFFUERA! Boldog 25. Születésnapot!'
+            }
+        ];
+
+        const stars = Array.from({length: 200}, () => ({ x: Math.random() * 2000, y: Math.random() * 2000, size: Math.random() * 2, speed: Math.random() * 0.5 }));
+
+        function startGame() {
+            cancelAnimationFrame(crawlAnimation);
+            document.getElementById('crawl-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            isGameRunning = true;
+            gameLoop();
+        }
+
+        function getDistance(x1, y1, x2, y2) { return Math.sqrt((x2-x1)**2 + (y2-y1)**2); }
+
+        function update() {
+            if(!isGameRunning || isModalOpen) return;
+            if (keys.w) player.y -= player.speed; if (keys.s) player.y += player.speed;
+            if (keys.a) player.x -= player.speed; if (keys.d) player.x += player.speed;
+
+            if (keys.w && !keys.a && !keys.d) player.angle = -Math.PI/2;
+            else if (keys.s && !keys.a && !keys.d) player.angle = Math.PI/2;
+            else if (keys.a && !keys.w && !keys.s) player.angle = Math.PI;
+            else if (keys.d && !keys.w && !keys.s) player.angle = 0;
+            else if (keys.w && keys.d) player.angle = -Math.PI/4;
+            else if (keys.w && keys.a) player.angle = -3*Math.PI/4;
+            else if (keys.s && keys.d) player.angle = Math.PI/4;
+            else if (keys.s && keys.a) player.angle = 3*Math.PI/4;
+
+            stars.forEach(s => { if (keys.w) s.y += s.speed; if (keys.s) s.y -= s.speed; if (keys.a) s.x += s.speed; if (keys.d) s.x -= s.speed;
+                if(s.x<0) s.x=canvas.width; if(s.x>canvas.width) s.x=0; if(s.y<0) s.y=canvas.height; if(s.y>canvas.height) s.y=0; });
+
+            activePlanet = planets.find(p => getDistance(player.x, player.y, p.x, p.y) < p.radius + 30) || null;
+            const prompt = document.getElementById('interaction-prompt');
+            prompt.style.display = activePlanet ? 'block' : 'none';
+            if(activePlanet) prompt.innerHTML = `[E] ${activePlanet.title}`;
+        }
+
+        function draw() {
+            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#fff'; stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill(); });
+
+            planets.forEach(p => {
+                const grad = ctx.createRadialGradient(p.x, p.y, p.radius*0.5, p.x, p.y, p.radius*1.5);
+                grad.addColorStop(0, p.color); grad.addColorStop(1, 'transparent');
+                ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(p.x, p.y, p.radius*1.5, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2); ctx.fill();
+                if(activePlanet === p) { ctx.strokeStyle = '#ffe81f'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(p.x, p.y, p.radius+15+Math.sin(Date.now()/150)*5, 0, Math.PI*2); ctx.stroke(); }
+            });
+
+            ctx.save(); ctx.translate(player.x, player.y); ctx.rotate(player.angle);
+            if(keys.w||keys.a||keys.s||keys.d) { ctx.fillStyle='#f90'; ctx.beginPath(); ctx.moveTo(-player.size+5,0); ctx.lineTo(-player.size-15,-5); ctx.lineTo(-player.size-15,5); ctx.fill(); }
+            ctx.fillStyle = '#ddd'; ctx.beginPath(); ctx.moveTo(player.size,0); ctx.lineTo(-player.size,player.size); ctx.lineTo(-player.size+10,0); ctx.lineTo(-player.size,-player.size); ctx.fill();
+            ctx.restore();
+        }
+
+        function gameLoop() { update(); draw(); if(isGameRunning) requestAnimationFrame(gameLoop); }
+
+        function openModal(planet) {
+            isModalOpen = true;
+            document.getElementById('interaction-prompt').style.display = 'none';
+            document.getElementById('modal-title').innerText = planet.title;
+            document.getElementById('modal-text').innerHTML = planet.text;
+            
+            const imgEl = document.getElementById('modal-image');
+            if(planet.img) { imgEl.src = planet.img; imgEl.style.display = 'block'; } else { imgEl.style.display = 'none'; }
+            
+            const audioEl = document.getElementById('modal-audio');
+            if(planet.audio) { audioEl.src = planet.audio; audioEl.style.display = 'block'; } else { audioEl.style.display = 'none'; audioEl.pause(); }
+            
+            document.getElementById('memory-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            isModalOpen = false;
+            document.getElementById('memory-modal').classList.remove('active');
+            document.getElementById('modal-audio').pause();
+        }
+    </script>
+</body>
+</html>
