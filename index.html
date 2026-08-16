@@ -2,62 +2,86 @@
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kata Galaxisa - Epizód XXV</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* ALAPVETŐ STÍLUSOK */
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; color: #ffe81f; font-family: 'Orbitron', sans-serif; overflow: hidden; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; color: #ffe81f; font-family: 'Orbitron', sans-serif; overflow: hidden; touch-action: none; }
         
         /* JELSZÓ KÉPERNYŐ */
         #login-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #1a1a1a 0%, #000000 100%); z-index: 100; }
         #login-screen h1 { font-size: 3rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 5px; text-align: center; }
-        #login-screen p { color: #fff; margin-bottom: 30px; font-family: 'Oswald', sans-serif; font-size: 1.2rem; text-align: center; max-width: 600px; }
-        #password-input { padding: 15px; font-size: 1.5rem; background: transparent; border: 2px solid #ffe81f; color: #ffe81f; text-align: center; font-family: 'Orbitron', sans-serif; outline: none; border-radius: 5px; margin-bottom: 20px; text-transform: uppercase; }
+        #login-screen p { color: #fff; margin-bottom: 30px; font-family: 'Oswald', sans-serif; font-size: 1.2rem; text-align: center; max-width: 600px; padding: 0 20px; }
+        #password-input { padding: 15px; font-size: 1.5rem; background: transparent; border: 2px solid #ffe81f; color: #ffe81f; text-align: center; font-family: 'Orbitron', sans-serif; outline: none; border-radius: 5px; margin-bottom: 20px; text-transform: uppercase; width: 80%; max-width: 300px; }
         .btn { padding: 10px 30px; font-size: 1.2rem; background-color: #ffe81f; color: #000; border: none; cursor: pointer; font-family: 'Orbitron', sans-serif; font-weight: bold; border-radius: 5px; transition: all 0.3s; margin-top: 10px; }
         .btn:hover { background-color: #fff; box-shadow: 0 0 20px #fff; }
-        #login-error { color: #ff4444; margin-top: 15px; display: none; }
+        #login-error { color: #ff4444; margin-top: 15px; display: none; text-align: center; }
 
         /* STAR WARS BEVEZETŐ SZÖVEG */
         #crawl-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; overflow: hidden; z-index: 50; display: none; }
         .fade { position: absolute; width: 100%; min-height: 40vh; top: 0; background-image: linear-gradient(0deg, transparent, black 75%); z-index: 51; }
-        .star-wars-container { display: flex; justify-content: center; position: absolute; top: 0; left: 0; width: 100%; height: 100%; color: #ffe81f; font-family: 'Oswald', sans-serif; font-size: 200%; perspective: 400px; text-align: justify; }
-        .crawl { position: relative; transform-origin: 50% 100%; width: 60%; margin: 0 auto; padding-bottom: 50px; }
+        .star-wars-container { display: flex; justify-content: center; position: absolute; top: 0; left: 0; width: 100%; height: 100%; color: #ffe81f; font-family: 'Oswald', sans-serif; font-size: 150%; perspective: 400px; text-align: justify; }
+        @media (min-width: 768px) { .star-wars-container { font-size: 200%; } }
+        .crawl { position: relative; transform-origin: 50% 100%; width: 80%; margin: 0 auto; padding-bottom: 50px; }
+        @media (min-width: 768px) { .crawl { width: 60%; } }
         .crawl-title { text-align: center; margin-bottom: 50px; }
         .crawl-title h1 { font-size: 2.5em; margin: 0; text-transform: uppercase; }
         .crawl-title h2 { font-size: 1.5em; margin: 0; }
         #skip-crawl-btn { position: absolute; bottom: 30px; right: 30px; z-index: 52; }
 
         /* STATIKUS SZÖVEG KÉPERNYŐ (Animáció után) */
-        #static-intro-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 45; display: none; flex-direction: column; justify-content: center; align-items: center; overflow-y: auto; padding: 40px; box-sizing: border-box; }
-        .static-content { max-width: 800px; color: #ffe81f; font-family: 'Oswald', sans-serif; font-size: 1.3rem; text-align: justify; line-height: 1.6; margin-bottom: 30px; }
+        #static-intro-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 45; display: none; flex-direction: column; justify-content: flex-start; align-items: center; overflow-y: auto; padding: 40px 20px; box-sizing: border-box; }
+        .static-content { max-width: 800px; color: #ffe81f; font-family: 'Oswald', sans-serif; font-size: 1.1rem; text-align: justify; line-height: 1.6; margin-bottom: 30px; }
+        @media (min-width: 768px) { .static-content { font-size: 1.3rem; } }
         .static-content h1, .static-content h2 { text-align: center; font-family: 'Orbitron', sans-serif; }
-
+        
         /* JÁTÉKTÉR ÉS UI */
         #game-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: none; }
-        canvas { display: block; }
-        #ui-layer { position: absolute; top: 20px; left: 20px; z-index: 15; pointer-events: none; }
-        .instruction { color: #fff; font-size: 1rem; background: rgba(0, 0, 0, 0.7); padding: 10px; border-radius: 5px; border: 1px solid #ffe81f; margin-bottom: 10px; }
-        #progress-tracker { color: #fff; font-size: 1rem; background: rgba(0, 0, 0, 0.7); padding: 10px; border-radius: 5px; border: 1px solid #ff3333; }
-        #interaction-prompt { position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%); font-size: 1.5rem; color: #fff; background: rgba(0, 0, 0, 0.8); border: 2px solid #ffe81f; padding: 10px 20px; border-radius: 10px; z-index: 15; display: none; animation: pulse 1.5s infinite; }
+        canvas { display: block; width: 100%; height: 100%; }
+        #ui-layer { position: absolute; top: 10px; left: 10px; z-index: 15; pointer-events: none; }
+        .instruction { color: #fff; font-size: 0.8rem; background: rgba(0, 0, 0, 0.7); padding: 8px; border-radius: 5px; border: 1px solid #ffe81f; margin-bottom: 10px; }
+        @media (min-width: 768px) { .instruction { font-size: 1rem; padding: 10px; } }
+        #progress-tracker { color: #fff; font-size: 0.8rem; background: rgba(0, 0, 0, 0.7); padding: 8px; border-radius: 5px; border: 1px solid #ff3333; }
+        @media (min-width: 768px) { #progress-tracker { font-size: 1rem; padding: 10px; } }
+        
+        /* INTERAKCIÓS GOMB (KATTINTHATÓ LETT MOBIL MIATT) */
+        #interaction-prompt { position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%); font-size: 1.2rem; color: #fff; background: rgba(0, 0, 0, 0.8); border: 2px solid #ffe81f; padding: 10px 20px; border-radius: 10px; z-index: 15; display: none; animation: pulse 1.5s infinite; cursor: pointer; pointer-events: auto; text-align: center; white-space: nowrap; }
+        @media (min-width: 768px) { #interaction-prompt { bottom: 10%; font-size: 1.5rem; } }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 232, 31, 0.7); } 50% { box-shadow: 0 0 10px 10px rgba(255, 232, 31, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 232, 31, 0); } }
 
+        /* MOBIL IRÁNYÍTÓK (CSAK ÉRINTŐKÉPERNYŐN LÁTSZANAK) */
+        #mobile-controls { position: absolute; bottom: 20px; left: 20px; width: 120px; height: 120px; z-index: 15; display: none; }
+        @media (pointer: coarse) { #mobile-controls { display: block; } .instruction { display: none; /* Mobilon rejtjük a gépi instrukciót */ } }
+        .d-pad { position: relative; width: 100%; height: 100%; }
+        .d-btn { position: absolute; width: 40px; height: 40px; background: rgba(255, 232, 31, 0.3); border: 1px solid #ffe81f; border-radius: 5px; color: #ffe81f; font-weight: bold; display: flex; justify-content: center; align-items: center; user-select: none; font-size: 1.2rem; }
+        .d-btn:active { background: rgba(255, 232, 31, 0.7); color: #000; }
+        #btn-up { top: 0; left: 40px; }
+        #btn-down { bottom: 0; left: 40px; }
+        #btn-left { top: 40px; left: 0; }
+        #btn-right { top: 40px; right: 0; }
+
         /* MODAL (BOLYGÓ TARTALMA) */
-        #memory-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 80%; max-width: 700px; max-height: 85vh; background: rgba(10, 10, 10, 0.95); border: 2px solid #ffe81f; border-radius: 15px; z-index: 20; display: flex; flex-direction: column; padding: 30px; box-shadow: 0 0 50px rgba(255, 232, 31, 0.2); transition: transform 0.3s; color: #fff; }
+        #memory-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 90%; max-width: 700px; max-height: 85vh; background: rgba(10, 10, 10, 0.95); border: 2px solid #ffe81f; border-radius: 15px; z-index: 20; display: flex; flex-direction: column; padding: 20px; box-shadow: 0 0 50px rgba(255, 232, 31, 0.2); transition: transform 0.3s; color: #fff; box-sizing: border-box; }
+        @media (min-width: 768px) { #memory-modal { width: 80%; padding: 30px; } }
         #memory-modal.active { transform: translate(-50%, -50%) scale(1); }
         #memory-modal.error-modal { border-color: #ff3333; box-shadow: 0 0 50px rgba(255, 51, 51, 0.4); }
-        #modal-close { position: absolute; top: 15px; right: 20px; font-size: 2rem; color: #ffe81f; cursor: pointer; display: block; }
+        #modal-close { position: absolute; top: 10px; right: 15px; font-size: 2rem; color: #ffe81f; cursor: pointer; display: block; }
         .error-modal #modal-close { color: #ff3333; }
-        #modal-title { font-size: 2rem; color: #ffe81f; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 15px; text-transform: uppercase; }
+        #modal-title { font-size: 1.5rem; color: #ffe81f; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; text-transform: uppercase; }
+        @media (min-width: 768px) { #modal-title { font-size: 2rem; padding-bottom: 15px; } }
         .error-modal #modal-title { color: #ff3333; border-bottom-color: #551111; }
-        #modal-content-area { overflow-y: auto; margin-top: 20px; font-family: 'Oswald', sans-serif; font-size: 1.3rem; line-height: 1.6; padding-right: 15px; }
-        .planet-image { width: 100%; max-height: 350px; object-fit: contain; border-radius: 10px; margin-bottom: 15px; display: none; border: 1px solid #ffe81f; }
-        #audio-status { margin-top: 15px; font-size: 1.1rem; text-align: center; color: #ff3333; font-weight: bold; }
+        #modal-content-area { overflow-y: auto; margin-top: 15px; font-family: 'Oswald', sans-serif; font-size: 1.1rem; line-height: 1.5; padding-right: 10px; }
+        @media (min-width: 768px) { #modal-content-area { font-size: 1.3rem; margin-top: 20px; padding-right: 15px; } }
+        .planet-image { width: 100%; max-height: 250px; object-fit: contain; border-radius: 10px; margin-bottom: 15px; display: none; border: 1px solid #ffe81f; }
+        @media (min-width: 768px) { .planet-image { max-height: 350px; } }
+        #audio-status { margin-top: 15px; font-size: 1rem; text-align: center; color: #ff3333; font-weight: bold; }
         
         /* GÖRDÍTŐSÁV STÍLUS */
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 6px; }
+        @media (min-width: 768px) { ::-webkit-scrollbar { width: 8px; } }
         ::-webkit-scrollbar-track { background: #111; }
         ::-webkit-scrollbar-thumb { background: #ffe81f; border-radius: 4px; }
     </style>
@@ -101,7 +125,7 @@
             <p>Nem játszol szerepeket, képes vagy hajnalig vérre menő vitát folytatni, és a szókincsed egyik kedvenc - de legalábbis az egyik legtöbbször használt - szava az AFFUERA, ami felér egy harmadfoki, Kúria ítélettel.</p>
             <p>Minden bolygó ebben a galaxisban egy-egy darabka a te zseniális “furcsaságaidból”. :)</p>
         </div>
-        <button class="btn" onclick="startGame()">Beszállás a Sólyomba &rarr;</button>
+        <button class="btn" onclick="startGame()" style="margin-bottom: 30px;">Beszállás a Sólyomba &rarr;</button>
     </div>
 
     <!-- 3. Játéktér -->
@@ -109,11 +133,22 @@
         <div id="ui-layer">
             <div class="instruction">
                 <strong>Irányítás:</strong> W A S D gombok<br>
-                <strong>Interakció:</strong> Repülj a bolygókhoz és nyomj 'E'-t!
+                <strong>Interakció:</strong> Repülj a bolygókhoz és nyomj 'E'-t (vagy kattints)!
             </div>
             <div id="progress-tracker">Felfedezett bolygók: 0 / 4</div>
         </div>
-        <div id="interaction-prompt">Nyomd meg az 'E' gombot!</div>
+        
+        <!-- Mobil irányító gombok -->
+        <div id="mobile-controls">
+            <div class="d-pad">
+                <div class="d-btn" id="btn-up">&#8593;</div>
+                <div class="d-btn" id="btn-left">&#8592;</div>
+                <div class="d-btn" id="btn-right">&#8594;</div>
+                <div class="d-btn" id="btn-down">&#8595;</div>
+            </div>
+        </div>
+
+        <div id="interaction-prompt" onclick="promptClicked()">Nyomd meg az 'E' gombot!</div>
         <canvas id="gameCanvas"></canvas>
     </div>
 
@@ -157,7 +192,7 @@
             // INTRO ZENE INDÍTÁSA
             const introAudio = document.getElementById('intro-audio');
             introAudio.volume = 0.2;
-            introAudio.play().catch(e => console.log("Intro audio autoplay letiltva, ha nem volt elég interakció."));
+            introAudio.play().catch(e => console.log("Intro audio autoplay letiltva."));
 
             const crawlText = document.getElementById('crawl-text');
             
@@ -178,7 +213,6 @@
             cancelAnimationFrame(crawlAnimation);
             document.getElementById('crawl-screen').style.display = 'none';
             document.getElementById('static-intro-screen').style.display = 'flex';
-            // Itt még hagyjuk szólni az intro zenét, amíg olvas.
         }
 
         const canvas = document.getElementById('gameCanvas');
@@ -195,6 +229,23 @@
         resizeCanvas();
 
         const keys = { w: false, a: false, s: false, d: false };
+        
+        // MOBIL ÉRINTÉS ESEMÉNYEK A VIRTUÁLIS GOMBOKHOZ
+        const btnUp = document.getElementById('btn-up');
+        const btnDown = document.getElementById('btn-down');
+        const btnLeft = document.getElementById('btn-left');
+        const btnRight = document.getElementById('btn-right');
+
+        function addTouchEvents(element, keyStr) {
+            element.addEventListener('touchstart', (e) => { e.preventDefault(); keys[keyStr] = true; });
+            element.addEventListener('touchend', (e) => { e.preventDefault(); keys[keyStr] = false; });
+            element.addEventListener('mousedown', (e) => { e.preventDefault(); keys[keyStr] = true; });
+            element.addEventListener('mouseup', (e) => { e.preventDefault(); keys[keyStr] = false; });
+            element.addEventListener('mouseleave', (e) => { e.preventDefault(); keys[keyStr] = false; });
+        }
+
+        addTouchEvents(btnUp, 'w'); addTouchEvents(btnDown, 's'); addTouchEvents(btnLeft, 'a'); addTouchEvents(btnRight, 'd');
+
         window.addEventListener('keydown', (e) => {
             if(keys.hasOwnProperty(e.key.toLowerCase())) keys[e.key.toLowerCase()] = true;
             if(e.key.toLowerCase() === 'e' && activePlanet && !isModalOpen) openModal(activePlanet);
@@ -204,8 +255,13 @@
             if(keys.hasOwnProperty(e.key.toLowerCase())) keys[e.key.toLowerCase()] = false;
         });
 
+        function promptClicked() {
+            if(activePlanet && !isModalOpen) openModal(activePlanet);
+        }
+
         // Űrhajó sebesség 2-re lassítva
-        const player = { x: canvas.width / 2, y: canvas.height / 2 + 200, size: 25, speed: 2, angle: -Math.PI/2 };
+        const player = { x: canvas.width / 2, y: canvas.height / 2 + 200, size: 20, speed: 2, angle: -Math.PI/2 };
+        if(window.innerWidth < 768) { player.size = 15; player.speed = 1.5; } // Mobilon picit kisebb és lassabb
 
         const planets = [
             {
@@ -239,6 +295,9 @@
                 text: '<p>25 éves lett a galaxisod, ami a története során sok mindent látott már, győztes és vesztes űrcsatákat. Ezek formálták a Te galaxisod, ami pontosan így lett tökéletes. Ez a digitális holokron sokkal többet tartalmaz, mint amennyit most megmutatott neked.</p><p>Azonban ahhoz, hogy lássuk milyen lesz a következő 1 év, most nem áll rendelkezésünkre egy, az ellenséges oldali holokron vagy force vision.</p><p>Ettől függetlenül remélem és kívánom, hogy csodálatos lesz és legyen!</p><h3 style="text-align: center;">Boldog születésnapot!</h3><h2 style="text-align: center; margin-top: 20px;">May the 25th be with you!</h2>'
             }
         ];
+        
+        // Mobilon kicsit kisebb bolygók, hogy elférjenek
+        if(window.innerWidth < 768) { planets.forEach(p => p.radius *= 0.7); }
 
         const stars = Array.from({length: 200}, () => ({ x: Math.random() * 2000, y: Math.random() * 2000, size: Math.random() * 2, speed: Math.random() * 0.5 }));
 
@@ -292,11 +351,12 @@
             const prompt = document.getElementById('interaction-prompt');
             prompt.style.display = activePlanet ? 'block' : 'none';
             if(activePlanet) {
+                const actionText = (window.innerWidth < 768) ? "KATTINTS IDE!" : "[E]";
                 if(activePlanet.id === 5 && visitedPlanets.size < 4) {
-                    prompt.innerHTML = `[E] ${activePlanet.title} (ZÁROLVA)`;
+                    prompt.innerHTML = `${actionText} ${activePlanet.title} (ZÁROLVA)`;
                     prompt.style.borderColor = '#ff3333';
                 } else {
-                    prompt.innerHTML = `[E] ${activePlanet.title}`;
+                    prompt.innerHTML = `${actionText} ${activePlanet.title}`;
                     prompt.style.borderColor = '#ffe81f';
                 }
             }
