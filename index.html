@@ -48,12 +48,13 @@
         #memory-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 80%; max-width: 700px; max-height: 85vh; background: rgba(10, 10, 10, 0.95); border: 2px solid #ffe81f; border-radius: 15px; z-index: 20; display: flex; flex-direction: column; padding: 30px; box-shadow: 0 0 50px rgba(255, 232, 31, 0.2); transition: transform 0.3s; color: #fff; }
         #memory-modal.active { transform: translate(-50%, -50%) scale(1); }
         #memory-modal.error-modal { border-color: #ff3333; box-shadow: 0 0 50px rgba(255, 51, 51, 0.4); }
-        #modal-close { position: absolute; top: 15px; right: 20px; font-size: 2rem; color: #ffe81f; cursor: pointer; }
+        #modal-close { position: absolute; top: 15px; right: 20px; font-size: 2rem; color: #ffe81f; cursor: pointer; display: block; }
         .error-modal #modal-close { color: #ff3333; }
         #modal-title { font-size: 2rem; color: #ffe81f; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 15px; text-transform: uppercase; }
         .error-modal #modal-title { color: #ff3333; border-bottom-color: #551111; }
         #modal-content-area { overflow-y: auto; margin-top: 20px; font-family: 'Oswald', sans-serif; font-size: 1.3rem; line-height: 1.6; padding-right: 15px; }
         .planet-image { width: 100%; max-height: 350px; object-fit: contain; border-radius: 10px; margin-bottom: 15px; display: none; border: 1px solid #ffe81f; }
+        #audio-status { margin-top: 15px; font-size: 1.1rem; text-align: center; color: #ff3333; font-weight: bold; }
         
         /* GÖRDÍTŐSÁV STÍLUS */
         ::-webkit-scrollbar { width: 8px; }
@@ -64,7 +65,7 @@
 <body>
 
     <div id="login-screen">
-        <h1>Jedi Archívum</h1>
+        <h1>A Nagy Holokron</h1>
         <p>A belépéshez add meg a galaxis legpusztítóbb varázsigéjét.</p>
         <input type="password" id="password-input" placeholder="Jelszó">
         <button class="btn" onclick="checkPassword()">Feloldás</button>
@@ -81,9 +82,9 @@
                     <h1>KATA GALAXISA</h1>
                 </div>
                 <p>A galaxis végtelen, de létezik egy szektor, ami minden másnál különlegesebb, a legfényesebb hullócsillagok sem érnek fel ehhez. Negyedszázad telt el, és ez a világ pontosan olyanná formálódott, amilyen te vagy.</p><br>
-                <p>Ez a kis virtuális holokron azért jött létre, hogy majd a szülinapozáson (IVÁS!) kívül egy másik módon is megünnepeljük azt a lányt, akinek galaxisa nélkül nem lenne teljes az univerzum. Azt az embert, akinek a lételeme a vita, és aki a vaksötét szobájában egy üveg Frittmannal a kezében, rezzenéstelen arccal nézi végig a bedőlt dél-amerikai foci vagy tenisz tipszmikszet.</p><br>
+                <p>Ez a kis virtuális holokron azért jött létre, hogy majd a szülinapozáson (IVÁS!) kívűl egy másik módon is megünnepeljük azt a lányt, akinek galaxisa nélkül nem lenne teljes az univerzum. Azt az embert, akinek a lételeme a vita, és aki a vaksötét szobájában egy üveg Frittmannal a kezében, rezzenéstelen arccal nézi végig a bedőlt dél-amerikai foci vagy tenisz tipszmikszet.</p><br>
                 <p>Nem játszol szerepeket, képes vagy hajnalig vérre menő vitát folytatni, és a szókincsed egyik kedvenc - de legalábbis az egyik legtöbbször használt - szava az AFFUERA, ami felér egy harmadfoki, Kúria ítélettel.</p><br>
-                <p>Minden bolygó ebben a galaxisban egy-egy darabka a te zseniális "furcsaságaidból". :)</p><br>
+                <p>Minden bolygó ebben a galaxisban egy-egy darabka a Te zseniális "furcsaságaidból". :)</p><br>
                 <p>Csak szállj be a Sólyomba, és fedezd fel a saját galaxisodat!</p>
             </div>
         </div>
@@ -96,13 +97,14 @@
             <h2>EPIZÓD XXV</h2>
             <h1>KATA GALAXISA</h1>
             <p>A galaxis végtelen, de létezik egy szektor, ami minden másnál különlegesebb, a legfényesebb hullócsillagok sem érnek fel ehhez. Negyedszázad telt el, és ez a világ pontosan olyanná formálódott, amilyen te vagy.</p>
-            <p>Ez a kis virtuális holokron azért jött létre, hogy majd a szülinapozáson (IVÁS!) kívül egy másik módon is megünnepeljük azt a lányt, akinek galaxisa nélkül nem lenne teljes az univerzum. Azt az embert, akinek a lételeme a vita, és aki a vaksötét szobájában egy üveg Frittmannal a kezében, rezzenéstelen arccal nézi végig a bedőlt dél-amerikai foci vagy tenisz tipszmikszet.</p>
+            <p>Ez a kis virtuális holokron azért jött létre, hogy majd a szülinapozáson (IVÁS!) kívűl egy másik módon is megünnepeljük azt a lányt, akinek galaxisa nélkül nem lenne teljes az univerzum. Azt az embert, akinek a lételeme a vita, és aki a vaksötét szobájában egy üveg Frittmannal a kezében, rezzenéstelen arccal nézi végig a bedőlt dél-amerikai foci vagy tenisz tipszmikszet.</p>
             <p>Nem játszol szerepeket, képes vagy hajnalig vérre menő vitát folytatni, és a szókincsed egyik kedvenc - de legalábbis az egyik legtöbbször használt - szava az AFFUERA, ami felér egy harmadfoki, Kúria ítélettel.</p>
-            <p>Minden bolygó ebben a galaxisban egy-egy darabka a te zseniális "furcsaságaidból". :)</p>
+            <p>Minden bolygó ebben a galaxisban egy-egy darabka a Te zseniális "furcsaságaidból". :)</p>
         </div>
         <button class="btn" onclick="startGame()">Beszállás a Sólyomba &rarr;</button>
     </div>
 
+    <!-- 3. Játéktér -->
     <div id="game-screen">
         <div id="ui-layer">
             <div class="instruction">
@@ -115,14 +117,15 @@
         <canvas id="gameCanvas"></canvas>
     </div>
 
+    <!-- 4. Modal (Bolygó tartalma) -->
     <div id="memory-modal">
         <div id="modal-close" onclick="closeModal()">&times;</div>
         <h2 id="modal-title">Bolygó neve</h2>
         <div id="modal-content-area">
             <img id="modal-image" class="planet-image" src="" alt="Kép">
             <div id="modal-text"></div>
-            <!-- Zenelejátszó: ide kerülnek majd a zenék (src="#") -->
-            <audio id="modal-audio" controls style="width:100%; margin-top:20px; display:none;" src="#"></audio>
+            <div id="audio-status"></div>
+            <audio id="modal-audio" style="display:none;" src="#"></audio>
         </div>
     </div>
 
@@ -151,7 +154,7 @@
             const crawlText = document.getElementById('crawl-text');
             
             function animateCrawl() {
-                pos -= 0.4; // Lassított sebesség
+                pos -= 0.4; // Lassítva
                 crawlText.style.transform = `rotateX(20deg) translateY(${pos}px)`;
                 
                 if (pos > -1800) { 
@@ -172,13 +175,11 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         let isGameRunning = false, isModalOpen = false, activePlanet = null;
-        
-        // Felfedezett bolygók nyilvántartása
+        let isAudioLocked = false; 
         let visitedPlanets = new Set(); 
 
-        // Űrhajó képének betöltése
         const shipImg = new Image();
-        shipImg.src = 'pictures/urhajo.png';
+        shipImg.src = 'pictures/urhajo.png'; // Űrhajó képe
 
         function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas);
@@ -188,44 +189,44 @@
         window.addEventListener('keydown', (e) => {
             if(keys.hasOwnProperty(e.key.toLowerCase())) keys[e.key.toLowerCase()] = true;
             if(e.key.toLowerCase() === 'e' && activePlanet && !isModalOpen) openModal(activePlanet);
-            if(e.key === 'Escape' && isModalOpen) closeModal();
+            if(e.key === 'Escape' && isModalOpen && !isAudioLocked) closeModal(); // Csak ha nincs zene-zár!
         });
         window.addEventListener('keyup', (e) => {
             if(keys.hasOwnProperty(e.key.toLowerCase())) keys[e.key.toLowerCase()] = false;
         });
 
-        // Sebesség harmadolva (6 -> 2)
+        // Űrhajó paraméterek: Sebesség 2-re csökkentve (1/3-a az eredeti 6-nak)
         const player = { x: canvas.width / 2, y: canvas.height / 2 + 200, size: 25, speed: 2, angle: -Math.PI/2 };
 
         const planets = [
             {
                 id: 1, x: canvas.width * 0.2, y: canvas.height * 0.2, radius: 45, color: '#ff3333',
                 title: '1. Bolygó: A legfelsőbb bíróság (Az AFFUERA szektor)',
-                img: '', audio: '', 
+                img: '', audio: 'music/BringMeToLife.mp3', 
                 text: '<p>Üdv a galaxis legkeményebb tárgyalótermében! Ide bárki beléphet egy jó vitára, a szabályok viszont egyértelműek: te vagy a bíró.</p><p>Amikor olyat hallasz, ami nem tetszik, nincs helye a fellebbezésnek. Csak lecsap a kalapács, és jön a végső ítélet: <strong>AFFUERA!</strong></p><p>Az ajtót egyedül is megtalálja aki hülyeséget mondott.</p>'
             },
             {
                 id: 2, x: canvas.width * 0.8, y: canvas.height * 0.25, radius: 50, color: '#1a1a2e',
                 title: '2. Bolygó: A sötét szoba (A Szentély)',
-                img: '', audio: '', 
+                img: '', audio: 'music/Children.mp3', 
                 text: '<p>A béke szigete. Itt sosincs nappal, a sötétséget csak a PS5 és egy focimeccs, egy sorozat, vagy éppen a CHATY fénye töri meg.</p><p>Amikor pedig elmegy a tuti szelvény, nem repül a kontroller. Csak tudomásul veszed és már jöhet is a <em>bor</em>.</p><p>Habár attól a lyuktól a falon igazán egyedi a szobád, hamarosan megcsináljuk azt is és a fehér egyik árnyalatával kifestjük a szentélyed.</p>'
             },
             {
                 id: 3, x: canvas.width * 0.3, y: canvas.height * 0.7, radius: 40, color: '#ffaa00',
                 title: '3. Bolygó: A törvényen kívüli ruházat (A közgáz lázadás)',
-                img: '', audio: '', 
+                img: '', audio: 'music/RedEye.mp3', 
                 text: '<p>A véget nem érő viták hazája. A bolygó alaptörvénye kimondja: <em>"A ruha NEM létszükséglet." (Vestis non est ad vivendum necessaria)</em>.</p><p>Hiába mond mást a hivatalos közgáz érettségi megoldókulcsa, te hajnalig képes lennél vitatkozni azon, hogy a rendszer téved - de csakis egy kis bor társaságában.</p><p>Itt hajnalokig lehet vitatkozni, de csak és kizárólag ész érvekkel, az érzelmek itt nem hatnak. Aki nem ért veled egyet, annak AFFUERA van.</p>'
             },
             {
                 id: 4, x: canvas.width * 0.7, y: canvas.height * 0.75, radius: 45, color: '#aaddaa',
                 title: '4. Bolygó: A Frittmann-köd (Az akciós zóna)',
-                img: 'pictures/frittmann.jpg', audio: '', 
+                img: 'pictures/frittmann.jpg', audio: 'music/YourTouch.mp3', 
                 text: '<p>Itt az olcsó a király. A felszínen kristálytiszta, alsópolcos Frittmann folyik a folyókban, minden szigorúan akciós és a fák levelei lejárat nélküli kuponok.</p><p>Egyébként is minek fenszizni, ha a célnak ez is tökéletesen megfelel? Emeljük poharunkat a racionalitásra!</p>'
             },
             {
                 id: 5, x: canvas.width / 2, y: canvas.height / 2, radius: 60, color: '#bb55ff', locked: true,
                 title: '5. Bolygó: A 25. évforduló (A Nagy Holokron)',
-                img: '', audio: '', 
+                img: '', audio: 'music/TwentyEight.mp3', 
                 text: '<p>25 éves lett a galaxisod, ami a története során sok mindent látott már, jót és rosszat. Ezek formálták a Te galaxisod, ami pontosan így lett tökéletes. Ez a digitális holokron sokkal többet tartalmaz, mint amennyit most megmutatott neked.</p><p>Azonban ahhoz, hogy lássuk milyen lesz a következő 1 év, most nem áll rendelkezésünkre egy, az ellenséges oldali holokron vagy force vision.</p><p>Ettől függetlenül remélem és kívánom, hogy csodálatos lesz és legyen!</p><h3 style="text-align: center;">Boldog születésnapot!</h3><h2 style="text-align: center; margin-top: 20px;">May the 25th be with you!</h2>'
             }
         ];
@@ -250,13 +251,13 @@
             if (keys.a) player.x -= player.speed; 
             if (keys.d) player.x += player.speed;
 
-            // Láthatatlan falak a képernyő szélén
+            // Képernyőhatárok (Láthatatlan falak)
             if (player.x < player.size) player.x = player.size;
             if (player.x > canvas.width - player.size) player.x = canvas.width - player.size;
             if (player.y < player.size) player.y = player.size;
             if (player.y > canvas.height - player.size) player.y = canvas.height - player.size;
 
-            // Szög számítása a sprite forgatásához
+            // Forgás
             if (keys.w && !keys.a && !keys.d) player.angle = -Math.PI/2;
             else if (keys.s && !keys.a && !keys.d) player.angle = Math.PI/2;
             else if (keys.a && !keys.w && !keys.s) player.angle = Math.PI;
@@ -266,7 +267,6 @@
             else if (keys.s && keys.d) player.angle = Math.PI/4;
             else if (keys.s && keys.a) player.angle = 3*Math.PI/4;
 
-            // Csillagok mozgatása hátrafelé (illúzió)
             stars.forEach(s => { 
                 if (keys.w) s.y += s.speed; 
                 if (keys.s) s.y -= s.speed; 
@@ -296,7 +296,7 @@
 
             planets.forEach(p => {
                 const isLockedFinalPlanet = (p.id === 5 && visitedPlanets.size < 4);
-                const actualColor = isLockedFinalPlanet ? '#555555' : p.color; // Szürke, ha még zárolt
+                const actualColor = isLockedFinalPlanet ? '#555555' : p.color;
 
                 const grad = ctx.createRadialGradient(p.x, p.y, p.radius*0.5, p.x, p.y, p.radius*1.5);
                 grad.addColorStop(0, actualColor); grad.addColorStop(1, 'transparent');
@@ -305,21 +305,15 @@
                 ctx.fillStyle = actualColor; ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2); ctx.fill();
                 
                 if(isLockedFinalPlanet) {
-                    // Kis X vagy lakat jelzése
-                    ctx.strokeStyle = '#ff3333';
-                    ctx.lineWidth = 4;
-                    ctx.beginPath();
+                    ctx.strokeStyle = '#ff3333'; ctx.lineWidth = 4; ctx.beginPath();
                     ctx.moveTo(p.x - 10, p.y - 10); ctx.lineTo(p.x + 10, p.y + 10);
-                    ctx.moveTo(p.x + 10, p.y - 10); ctx.lineTo(p.x - 10, p.y + 10);
-                    ctx.stroke();
+                    ctx.moveTo(p.x + 10, p.y - 10); ctx.lineTo(p.x - 10, p.y + 10); ctx.stroke();
                 }
 
                 if(activePlanet === p) { 
                     ctx.strokeStyle = isLockedFinalPlanet ? '#ff3333' : '#ffe81f'; 
-                    ctx.lineWidth = 2; 
-                    ctx.beginPath(); 
-                    ctx.arc(p.x, p.y, p.radius+15+Math.sin(Date.now()/150)*5, 0, Math.PI*2); 
-                    ctx.stroke(); 
+                    ctx.lineWidth = 2; ctx.beginPath(); 
+                    ctx.arc(p.x, p.y, p.radius+15+Math.sin(Date.now()/150)*5, 0, Math.PI*2); ctx.stroke(); 
                 }
             });
 
@@ -327,78 +321,93 @@
             ctx.translate(player.x, player.y); 
             ctx.rotate(player.angle);
 
-            // Ha van kép betöltve, azt rajzoljuk ki, ha nincs, marad a háromszög
             if(shipImg.complete && shipImg.naturalWidth !== 0) {
-                // A képet elforgatjuk 90 fokkal, mert az alapállás felfelé néz általában, a játék motorja meg balról jobbra mér.
                 ctx.rotate(Math.PI/2);
                 ctx.drawImage(shipImg, -player.size, -player.size, player.size*2, player.size*2);
             } else {
                 if(keys.w||keys.a||keys.s||keys.d) { ctx.fillStyle='#f90'; ctx.beginPath(); ctx.moveTo(-player.size+5,0); ctx.lineTo(-player.size-15,-5); ctx.lineTo(-player.size-15,5); ctx.fill(); }
                 ctx.fillStyle = '#ddd'; ctx.beginPath(); ctx.moveTo(player.size,0); ctx.lineTo(-player.size,player.size); ctx.lineTo(-player.size+10,0); ctx.lineTo(-player.size,-player.size); ctx.fill();
             }
-            
             ctx.restore();
         }
 
         function gameLoop() { update(); draw(); if(isGameRunning) requestAnimationFrame(gameLoop); }
+
+        const audioEl = document.getElementById('modal-audio');
+        const statusEl = document.getElementById('audio-status');
+        const closeBtn = document.getElementById('modal-close');
 
         function openModal(planet) {
             isModalOpen = true;
             document.getElementById('interaction-prompt').style.display = 'none';
             const modal = document.getElementById('memory-modal');
             
-            // Főellenség bolygó logikája
             if (planet.id === 5 && visitedPlanets.size < 4) {
                 modal.classList.add('error-modal');
                 document.getElementById('modal-title').innerText = "Hozzáférés Megtagadva!";
                 document.getElementById('modal-text').innerHTML = `
                     <p style="text-align:center; color:#ff3333; font-size:1.5rem;">Ez a bolygó még nem áll készen a fogadásodra.</p>
-                    <p style="text-align:center;">Még <strong>${4 - visitedPlanets.size}</strong> másik bolygót kell felfedezned a galaxisban, hogy megnyisd a Nagy Holokront.</p>
-                `;
+                    <p style="text-align:center;">Még <strong>${4 - visitedPlanets.size}</strong> másik bolygót kell felfedezned a galaxisban, hogy megnyisd a Nagy Holokront.</p>`;
                 document.getElementById('modal-image').style.display = 'none';
-                document.getElementById('modal-audio').style.display = 'none';
+                statusEl.innerText = ""; closeBtn.style.display = 'block';
             } else {
                 modal.classList.remove('error-modal');
                 document.getElementById('modal-title').innerText = planet.title;
                 document.getElementById('modal-text').innerHTML = planet.text;
                 
-                // Bolygó hozzáadása a felfedezettekhez
                 if(planet.id !== 5) {
                     visitedPlanets.add(planet.id);
                     document.getElementById('progress-tracker').innerText = `Felfedezett bolygók: ${visitedPlanets.size} / 4`;
-                    
-                    // Ha most lett meg mind a 4, jelezhetünk!
                     if(visitedPlanets.size === 4) {
                         document.getElementById('progress-tracker').style.borderColor = '#33ff33';
                         document.getElementById('progress-tracker').style.color = '#33ff33';
-                        document.getElementById('progress-tracker').innerText += " - KÖZÉPPONT FELOLDVA!";
+                        document.getElementById('progress-tracker').innerText += " - A NAGY HOLOKRON FELOLDVA!";
                     }
                 }
 
-                // Kép kezelése
                 const imgEl = document.getElementById('modal-image');
                 if(planet.img) { imgEl.src = planet.img; imgEl.style.display = 'block'; } else { imgEl.style.display = 'none'; }
                 
-                // Zene kezelése
-                const audioEl = document.getElementById('modal-audio');
                 if(planet.audio) { 
                     audioEl.src = planet.audio; 
-                    audioEl.style.display = 'block'; 
-                    audioEl.play().catch(e => console.log("Auto-play prevented")); 
+                    audioEl.volume = 0.2;
+                    isAudioLocked = true;
+                    closeBtn.style.display = 'none'; 
+                    statusEl.style.color = '#ff3333';
+                    statusEl.innerText = "Emlék letöltése és zene indítása...";
+                    audioEl.play().catch(e => { isAudioLocked = false; closeBtn.style.display = 'block'; statusEl.innerText = ""; }); 
                 } else { 
-                    audioEl.style.display = 'none'; 
-                    audioEl.pause(); 
+                    isAudioLocked = false; closeBtn.style.display = 'block'; statusEl.innerText = ""; audioEl.pause(); 
                 }
             }
-            
             modal.classList.add('active');
         }
 
+        audioEl.addEventListener('timeupdate', () => {
+            if (!audioEl.duration || !isAudioLocked) return;
+            const timeLeft = audioEl.duration - audioEl.currentTime;
+            
+            if (timeLeft <= 1.0 && timeLeft >= 0) {
+                audioEl.volume = Math.max(0, 0.2 * timeLeft); // Fade out utolsó 1 mp
+            }
+            
+            const formatTime = (time) => { const m = Math.floor(time / 60).toString().padStart(2, '0'); const s = Math.floor(time % 60).toString().padStart(2, '0'); return `${m}:${s}`; };
+            statusEl.innerText = `A bolygó elhagyásához hallgasd végig az emléket... ${formatTime(audioEl.currentTime)} / ${formatTime(audioEl.duration)}`;
+        });
+
+        audioEl.addEventListener('ended', () => {
+            isAudioLocked = false;
+            closeBtn.style.display = 'block'; 
+            statusEl.style.color = '#33ff33';
+            statusEl.innerText = "Az emlék véget ért. Most már elhagyhatod a bolygót.";
+        });
+
         function closeModal() {
+            if(isAudioLocked) return; 
             isModalOpen = false;
             document.getElementById('memory-modal').classList.remove('active');
-            document.getElementById('modal-audio').pause();
-            document.getElementById('modal-audio').currentTime = 0;
+            audioEl.pause();
+            audioEl.currentTime = 0;
         }
     </script>
 </body>
