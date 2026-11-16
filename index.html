@@ -3,111 +3,673 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Kata galaxisa - Epizód XXV interaktív Star Wars születésnapi holokron és űrutazás.">
     <title>Kata Galaxisa - Epizód XXV</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Oswald:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        /* ALAPVETŐ STÍLUSOK */
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; color: #ffe81f; font-family: 'Orbitron', sans-serif; overflow: hidden; touch-action: none; }
-        
-        /* JELSZÓ KÉPERNYŐ */
-        #login-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: radial-gradient(circle, #1a1a1a 0%, #000000 100%); z-index: 100; }
-        #login-screen h1 { font-size: 3rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 5px; text-align: center; }
-        #login-screen p { color: #fff; margin-bottom: 30px; font-family: 'Oswald', sans-serif; font-size: 1.2rem; text-align: center; max-width: 600px; padding: 0 20px; }
-        #password-input { padding: 15px; font-size: 1.5rem; background: transparent; border: 2px solid #ffe81f; color: #ffe81f; text-align: center; font-family: 'Orbitron', sans-serif; outline: none; border-radius: 5px; margin-bottom: 20px; text-transform: uppercase; width: 80%; max-width: 300px; }
-        .btn { padding: 10px 30px; font-size: 1.2rem; background-color: #ffe81f; color: #000; border: none; cursor: pointer; font-family: 'Orbitron', sans-serif; font-weight: bold; border-radius: 5px; transition: all 0.3s; margin-top: 10px; }
-        .btn:hover { background-color: #fff; box-shadow: 0 0 20px #fff; }
-        #login-error { color: #ff4444; margin-top: 15px; display: none; text-align: center; }
+/* Hallmark · star-wars-holocron · atmospheric · Kata galaxisa Epizód XXV */
+:root {
+    --color-space-deep: oklch(12% 0.015 250);
+    --color-space-surface: oklch(15% 0.02 245);
+    --color-space-panel: oklch(18% 0.024 240);
+    --color-space-elevated: oklch(22% 0.028 240);
+    
+    --color-border-subtle: oklch(28% 0.025 240);
+    --color-border-active: oklch(48% 0.06 230);
+    --color-border-yellow: oklch(86% 0.17 92);
+    --color-border-cyan: oklch(82% 0.14 210);
+    --color-border-red: oklch(64% 0.22 25);
+    
+    --color-sw-yellow: oklch(88% 0.17 92);
+    --color-sw-yellow-soft: oklch(24% 0.06 92);
+    --color-sw-yellow-muted: oklch(76% 0.13 92);
+    
+    --color-holo-cyan: oklch(82% 0.14 210);
+    --color-holo-cyan-soft: oklch(25% 0.05 210);
+    --color-holo-cyan-bright: oklch(90% 0.16 205);
+    
+    --color-imperial-red: oklch(65% 0.22 25);
+    --color-imperial-red-soft: oklch(24% 0.06 25);
+    
+    --color-core-green: oklch(78% 0.18 145);
+    --color-core-green-soft: oklch(25% 0.05 145);
+    
+    --color-ink-main: oklch(96% 0.008 240);
+    --color-ink-muted: oklch(78% 0.016 240);
+    --color-ink-dim: oklch(58% 0.015 240);
+    --color-ink-dark: oklch(12% 0.015 250);
+    
+    --color-focus: oklch(82% 0.14 210);
+    --color-shadow-ambient: oklch(6% 0.01 250);
+    --color-shadow-deep: oklch(4% 0.008 250);
+    
+    --font-display: 'Orbitron', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-crawl: 'Oswald', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-telemetry: 'Share Tech Mono', ui-monospace, monospace;
+    
+    --space-4: 4px;
+    --space-8: 8px;
+    --space-12: 12px;
+    --space-16: 16px;
+    --space-20: 20px;
+    --space-24: 24px;
+    --space-28: 28px;
+    --space-32: 32px;
+    --space-40: 40px;
+    --space-48: 48px;
+    --space-64: 64px;
+    
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    
+    --dur-fast: 150ms;
+    --dur-med: 250ms;
+    --dur-slow: 400ms;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
 
-        /* STAR WARS BEVEZETŐ SZÖVEG */
-        #crawl-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; overflow: hidden; z-index: 50; display: none; }
-        .fade { position: absolute; width: 100%; min-height: 40vh; top: 0; background-image: linear-gradient(0deg, transparent, black 75%); z-index: 51; }
-        .star-wars-container { display: flex; justify-content: center; position: absolute; top: 0; left: 0; width: 100%; height: 100%; color: #ffe81f; font-family: 'Oswald', sans-serif; font-size: 150%; perspective: 400px; text-align: justify; }
-        @media (min-width: 768px) { .star-wars-container { font-size: 200%; } }
-        .crawl { position: relative; transform-origin: 50% 100%; width: 80%; margin: 0 auto; padding-bottom: 50px; }
-        @media (min-width: 768px) { .crawl { width: 60%; } }
-        .crawl-title { text-align: center; margin-bottom: 50px; }
-        .crawl-title h1 { font-size: 2.5em; margin: 0; text-transform: uppercase; }
-        .crawl-title h2 { font-size: 1.5em; margin: 0; }
-        #skip-crawl-btn { position: absolute; bottom: 30px; right: 30px; z-index: 52; }
+/* ALAPVETŐ BEÁLLÍTÁSOK */
+*, *::before, *::after { box-sizing: border-box; }
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: clip;
+    overflow-y: hidden;
+    background-color: var(--color-space-deep);
+    color: var(--color-sw-yellow);
+    font-family: var(--font-display);
+    touch-action: none;
+    -webkit-font-smoothing: antialiased;
+}
 
-        /* STATIKUS SZÖVEG KÉPERNYŐ (Animáció után) */
-        #static-intro-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; z-index: 45; display: none; flex-direction: column; justify-content: flex-start; align-items: center; overflow-y: auto; padding: 40px 20px; box-sizing: border-box; }
-        .static-content { max-width: 800px; color: #ffe81f; font-family: 'Oswald', sans-serif; font-size: 1.1rem; text-align: justify; line-height: 1.6; margin-bottom: 30px; }
-        @media (min-width: 768px) { .static-content { font-size: 1.3rem; } }
-        .static-content h1, .static-content h2 { text-align: center; font-family: 'Orbitron', sans-serif; }
-        
-        /* JÁTÉKTÉR ÉS UI */
-        #game-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: none; }
-        canvas { display: block; width: 100%; height: 100%; }
-        #ui-layer { position: absolute; top: 10px; left: 10px; z-index: 15; pointer-events: none; }
-        .instruction { color: #fff; font-size: 0.8rem; background: rgba(0, 0, 0, 0.7); padding: 8px; border-radius: 5px; border: 1px solid #ffe81f; margin-bottom: 10px; }
-        @media (min-width: 768px) { .instruction { font-size: 1rem; padding: 10px; } }
-        #progress-tracker { color: #fff; font-size: 0.8rem; background: rgba(0, 0, 0, 0.7); padding: 8px; border-radius: 5px; border: 1px solid #ff3333; }
-        @media (min-width: 768px) { #progress-tracker { font-size: 1rem; padding: 10px; } }
-        
-        /* INTERAKCIÓS GOMB */
-        #interaction-prompt { position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%); font-size: 1.2rem; color: #fff; background: rgba(0, 0, 0, 0.8); border: 2px solid #ffe81f; padding: 10px 20px; border-radius: 10px; z-index: 15; display: none; animation: pulse 1.5s infinite; cursor: pointer; pointer-events: auto; text-align: center; white-space: nowrap; }
-        @media (min-width: 768px) { #interaction-prompt { bottom: 10%; font-size: 1.5rem; } }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 232, 31, 0.7); } 50% { box-shadow: 0 0 10px 10px rgba(255, 232, 31, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 232, 31, 0); } }
+h1, h2, h3 {
+    text-wrap: balance;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
 
-        /* MOBIL IRÁNYÍTÓK */
-        #mobile-controls { position: absolute; bottom: 20px; left: 20px; width: 120px; height: 120px; z-index: 15; display: none; }
-        @media (pointer: coarse) { #mobile-controls { display: block; } .instruction { display: none; } }
-        .d-pad { position: relative; width: 100%; height: 100%; }
-        .d-btn { position: absolute; width: 40px; height: 40px; background: rgba(255, 232, 31, 0.3); border: 1px solid #ffe81f; border-radius: 5px; color: #ffe81f; font-weight: bold; display: flex; justify-content: center; align-items: center; user-select: none; font-size: 1.2rem; }
-        .d-btn:active { background: rgba(255, 232, 31, 0.7); color: #000; }
-        #btn-up { top: 0; left: 40px; }
-        #btn-down { bottom: 0; left: 40px; }
-        #btn-left { top: 40px; left: 0; }
-        #btn-right { top: 40px; right: 0; }
+/* FÓKUSZ ÉS HOZZÁFÉRHETŐSÉG */
+button:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+}
+button:disabled, input:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
 
-        /* MODAL (BOLYGÓ TARTALMA) */
-        #memory-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 90%; max-width: 700px; max-height: 85vh; background: rgba(10, 10, 10, 0.95); border: 2px solid #ffe81f; border-radius: 15px; z-index: 20; display: flex; flex-direction: column; padding: 20px; box-shadow: 0 0 50px rgba(255, 232, 31, 0.2); transition: transform 0.3s; color: #fff; box-sizing: border-box; }
-        @media (min-width: 768px) { #memory-modal { width: 80%; padding: 30px; } }
-        #memory-modal.active { transform: translate(-50%, -50%) scale(1); }
-        #memory-modal.error-modal { border-color: #ff3333; box-shadow: 0 0 50px rgba(255, 51, 51, 0.4); }
-        #modal-close { position: absolute; top: 10px; right: 15px; font-size: 2rem; color: #ffe81f; cursor: pointer; display: block; }
-        .error-modal #modal-close { color: #ff3333; }
-        #modal-title { font-size: 1.5rem; color: #ffe81f; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; text-transform: uppercase; }
-        @media (min-width: 768px) { #modal-title { font-size: 2rem; padding-bottom: 15px; } }
-        
-        /* GÖRDÍTŐSÁV JAVÍTÁS (overflow-y: scroll kikényszeríti a sávot, így nem ugrál a layout) */
-        #modal-content-area { overflow-y: scroll; margin-top: 15px; font-family: 'Oswald', sans-serif; font-size: 1.1rem; line-height: 1.5; padding-right: 10px; }
-        @media (min-width: 768px) { #modal-content-area { font-size: 1.3rem; margin-top: 20px; padding-right: 15px; } }
-        
-        .planet-image { width: 100%; max-height: 250px; object-fit: contain; border-radius: 10px; margin-bottom: 15px; display: none; border: 1px solid #ffe81f; }
-        @media (min-width: 768px) { .planet-image { max-height: 350px; } }
-        
-        /* HANG STÁTUSZ JAVÍTÁS (min-height és tabular-nums, hogy a percek/másodpercek ne tolják el a dobozt) */
-        #audio-status { margin-top: 15px; font-size: 1rem; text-align: center; color: #ff3333; font-weight: bold; min-height: 24px; font-variant-numeric: tabular-nums; }
-        
-        /* GÖRDÍTŐSÁV STÍLUS */
-        ::-webkit-scrollbar { width: 6px; }
-        @media (min-width: 768px) { ::-webkit-scrollbar { width: 8px; } }
-        ::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb { background: #ffe81f; border-radius: 4px; }
+/* GOMBOK ÉS VEZÉRLŐK */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-8);
+    padding: var(--space-12) var(--space-28);
+    font-size: 1.05rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--color-ink-dark);
+    background-color: var(--color-sw-yellow);
+    border: 1px solid var(--color-border-yellow);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color var(--dur-fast) var(--ease-out),
+                color var(--dur-fast) var(--ease-out),
+                transform var(--dur-fast) var(--ease-out),
+                border-color var(--dur-fast) var(--ease-out);
+}
+.btn:hover {
+    background-color: var(--color-sw-yellow-muted);
+    border-color: var(--color-holo-cyan);
+    transform: translateY(-2px);
+}
+.btn:active {
+    transform: translateY(0);
+}
+
+/* 1. JELSZÓ KÉPERNYŐ (HOLOKRON CSOMÓPONT) */
+#login-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-space-deep);
+    background-image: radial-gradient(circle at center, var(--color-space-surface) 0%, var(--color-space-deep) 100%);
+    z-index: 100;
+    padding: var(--space-20);
+}
+.holocron-emitter {
+    width: 80px;
+    height: 80px;
+    margin-bottom: var(--space-24);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.holocron-crystal {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--color-holo-cyan) 0%, var(--color-sw-yellow) 100%);
+    transform: rotate(45deg);
+    border: 2px solid var(--color-holo-cyan-bright);
+    animation: holocronPulse 3s infinite ease-in-out;
+}
+@keyframes holocronPulse {
+    0%, 100% { transform: rotate(45deg) scale(0.92); opacity: 0.8; }
+    50% { transform: rotate(45deg) scale(1.08); opacity: 1; }
+}
+.login-card {
+    background-color: var(--color-space-surface);
+    color: var(--color-ink-main);
+    border-radius: var(--radius-md);
+    padding: var(--space-32) var(--space-40);
+    max-width: 480px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 16px 32px var(--color-shadow-deep);
+    position: relative;
+}
+#login-screen h1 {
+    font-size: 2.2rem;
+    margin: 0 0 var(--space-12) 0;
+    color: var(--color-sw-yellow);
+}
+#login-screen p {
+    color: var(--color-ink-muted);
+    font-family: var(--font-crawl);
+    font-size: 1.15rem;
+    margin: 0 0 var(--space-24) 0;
+    line-height: 1.5;
+}
+#password-input {
+    width: 100%;
+    max-width: 320px;
+    padding: var(--space-12) var(--space-16);
+    font-size: 1.2rem;
+    background-color: var(--color-space-deep);
+    border: 1px solid var(--color-border-subtle);
+    color: var(--color-sw-yellow);
+    text-align: center;
+    font-family: var(--font-display);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-20);
+    transition: border-color var(--dur-fast) var(--ease-out),
+                background-color var(--dur-fast) var(--ease-out);
+}
+#password-input:focus {
+    border-color: var(--color-holo-cyan);
+    background-color: var(--color-space-panel);
+}
+#login-error {
+    color: var(--color-imperial-red);
+    font-family: var(--font-telemetry);
+    font-size: 0.95rem;
+    margin-top: var(--space-16);
+    display: none;
+}
+
+/* 2. PROLÓGUS ÉS STAR WARS CRAWL */
+#prologue-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-space-deep);
+    color: var(--color-ink-main);
+    z-index: 60;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: var(--space-24);
+}
+.prologue-text {
+    color: var(--color-holo-cyan);
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 600;
+    text-align: center;
+    max-width: 700px;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+@media (min-width: 768px) {
+    .prologue-text { font-size: 2.2rem; }
+}
+
+#crawl-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-space-deep);
+    overflow: hidden;
+    z-index: 50;
+    display: none;
+}
+.fade-overlay {
+    position: absolute;
+    width: 100%;
+    height: 45vh;
+    top: 0;
+    left: 0;
+    background-image: linear-gradient(180deg, var(--color-space-deep) 20%, transparent 100%);
+    z-index: 51;
+    pointer-events: none;
+}
+.star-wars-container {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--color-sw-yellow);
+    font-family: var(--font-crawl);
+    font-size: 140%;
+    perspective: 380px;
+    text-align: justify;
+    hyphens: auto;
+}
+@media (min-width: 768px) {
+    .star-wars-container { font-size: 190%; }
+}
+.crawl {
+    position: relative;
+    transform-origin: 50% 100%;
+    width: 82%;
+    margin: 0 auto;
+    padding-bottom: var(--space-48);
+}
+@media (min-width: 768px) {
+    .crawl { width: 62%; }
+}
+.crawl-title {
+    text-align: center;
+    margin-bottom: var(--space-48);
+}
+.crawl-title h1 {
+    font-size: 2.2em;
+    margin: 0;
+    color: var(--color-sw-yellow);
+}
+.crawl-subtitle {
+    display: block;
+    font-size: 0.65em;
+    margin-bottom: var(--space-8);
+    color: var(--color-sw-yellow-muted);
+}
+.crawl p {
+    line-height: 1.6;
+    margin: 0 0 var(--space-20) 0;
+    color: var(--color-sw-yellow);
+}
+#skip-crawl-btn {
+    position: absolute;
+    bottom: var(--space-28);
+    right: var(--space-28);
+    z-index: 52;
+}
+
+/* 3. STATIKUS KÉPERNYŐ (ARCHÍV DATAPAD) */
+#static-intro-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-space-deep);
+    z-index: 45;
+    display: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-y: auto;
+    padding: var(--space-40) var(--space-20);
+}
+.static-card {
+    background-color: var(--color-space-surface);
+    color: var(--color-ink-main);
+    border-radius: var(--radius-md);
+    max-width: 820px;
+    width: 100%;
+    padding: var(--space-32) var(--space-40);
+    margin-bottom: var(--space-32);
+    box-shadow: 0 16px 32px var(--color-shadow-deep);
+}
+.static-header {
+    text-align: center;
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding-bottom: var(--space-20);
+    margin-bottom: var(--space-24);
+}
+.static-header h1 {
+    font-size: 2.2rem;
+    color: var(--color-sw-yellow);
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+}
+.static-content p {
+    color: var(--color-ink-main);
+    font-family: var(--font-crawl);
+    font-size: 1.15rem;
+    line-height: 1.7;
+    margin: 0 0 var(--space-16) 0;
+    text-align: justify;
+    hyphens: auto;
+}
+@media (min-width: 768px) {
+    .static-content p { font-size: 1.3rem; }
+}
+
+/* 4. JÁTÉKTÉR ÉS TACTICAL HUD */
+#game-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    display: none;
+    background-color: var(--color-space-deep);
+}
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+#ui-layer {
+    position: absolute;
+    top: var(--space-16);
+    left: var(--space-16);
+    z-index: 15;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+    max-width: 360px;
+}
+.instruction {
+    color: var(--color-ink-main);
+    font-family: var(--font-telemetry);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    background-color: var(--color-space-surface);
+    padding: var(--space-12) var(--space-16);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border-subtle);
+    box-shadow: 0 8px 16px var(--color-shadow-deep);
+}
+.instruction strong {
+    color: var(--color-sw-yellow);
+}
+@media (min-width: 768px) {
+    .instruction { font-size: 0.95rem; }
+}
+#progress-tracker {
+    color: var(--color-holo-cyan);
+    font-family: var(--font-telemetry);
+    font-size: 0.9rem;
+    background-color: var(--color-space-surface);
+    padding: var(--space-12) var(--space-16);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border-cyan);
+    box-shadow: 0 8px 16px var(--color-shadow-deep);
+}
+@media (min-width: 768px) {
+    #progress-tracker { font-size: 1rem; }
+}
+
+/* INTERAKCIÓS PROMPT */
+#interaction-prompt {
+    position: absolute;
+    bottom: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.1rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-ink-main);
+    background-color: var(--color-space-surface);
+    border: 1px solid var(--color-border-yellow);
+    padding: var(--space-12) var(--space-24);
+    border-radius: var(--radius-sm);
+    z-index: 15;
+    display: none;
+    cursor: pointer;
+    pointer-events: auto;
+    text-align: center;
+    white-space: nowrap;
+    animation: promptPulse 1.8s infinite ease-in-out;
+}
+.badge-locked {
+    color: var(--color-imperial-red);
+}
+@keyframes promptPulse {
+    0%, 100% { transform: translateX(-50%) scale(1); border-color: var(--color-border-yellow); }
+    50% { transform: translateX(-50%) scale(1.04); border-color: var(--color-holo-cyan); }
+}
+
+/* MOBIL IRÁNYÍTÓK */
+#mobile-controls {
+    position: absolute;
+    bottom: var(--space-20);
+    left: var(--space-20);
+    width: 130px;
+    height: 130px;
+    z-index: 15;
+    display: none;
+}
+@media (pointer: coarse) {
+    #mobile-controls { display: block; }
+    .instruction { display: none; }
+}
+.d-pad {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.d-btn {
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    background-color: transparent;
+    border: 1px solid var(--color-border-yellow);
+    border-radius: var(--radius-sm);
+    color: var(--color-sw-yellow);
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    font-size: 1.3rem;
+    transition: background-color var(--dur-fast) var(--ease-out),
+                color var(--dur-fast) var(--ease-out);
+}
+.d-btn:active {
+    background-color: var(--color-sw-yellow);
+    color: var(--color-ink-dark);
+}
+#btn-up { top: 0; left: 43px; }
+#btn-down { bottom: 0; left: 43px; }
+#btn-left { top: 43px; left: 0; }
+#btn-right { top: 43px; right: 0; }
+
+/* 5. MODAL (HOLOGRAFIKUS ADATÁTVITEL) */
+#memory-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.92);
+    opacity: 0;
+    pointer-events: none;
+    width: 90%;
+    max-width: 680px;
+    max-height: 85vh;
+    background-color: var(--color-space-surface);
+    border: 1px solid var(--color-border-yellow);
+    border-radius: var(--radius-md);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-24);
+    color: var(--color-ink-main);
+    transition: transform var(--dur-med) var(--ease-out),
+                opacity var(--dur-med) var(--ease-out);
+}
+@media (min-width: 768px) {
+    #memory-modal { width: 80%; padding: var(--space-32); }
+}
+#memory-modal.active {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+}
+#memory-modal.error-modal {
+    border-color: var(--color-border-red);
+}
+#modal-close {
+    position: absolute;
+    top: var(--space-12);
+    right: var(--space-16);
+    font-size: 1.8rem;
+    color: var(--color-sw-yellow);
+    cursor: pointer;
+    display: block;
+    line-height: 1;
+    padding: var(--space-4);
+    transition: color var(--dur-fast) var(--ease-out);
+}
+#modal-close:hover {
+    color: var(--color-ink-main);
+}
+.error-modal #modal-close {
+    color: var(--color-imperial-red);
+}
+#modal-title {
+    font-size: 1.4rem;
+    color: var(--color-sw-yellow);
+    margin: 0 0 var(--space-12) 0;
+    padding-bottom: var(--space-12);
+    border-bottom: 1px solid var(--color-border-subtle);
+}
+@media (min-width: 768px) {
+    #modal-title { font-size: 1.8rem; padding-bottom: var(--space-16); }
+}
+#modal-content-area {
+    overflow-y: scroll;
+    margin-top: var(--space-12);
+    font-family: var(--font-crawl);
+    font-size: 1.15rem;
+    line-height: 1.6;
+    padding-right: var(--space-12);
+    color: var(--color-ink-main);
+}
+@media (min-width: 768px) {
+    #modal-content-area { font-size: 1.25rem; margin-top: var(--space-16); padding-right: var(--space-16); }
+}
+.planet-image {
+    width: 100%;
+    max-height: 240px;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-16);
+    display: none;
+    border: 1px solid var(--color-border-yellow);
+    background-color: var(--color-space-deep);
+}
+@media (min-width: 768px) {
+    .planet-image { max-height: 320px; }
+}
+
+/* HANG STÁTUSZ ÉS TELEMETRIA */
+#audio-status {
+    margin-top: var(--space-16);
+    font-family: var(--font-telemetry);
+    font-size: 0.95rem;
+    text-align: center;
+    color: var(--color-imperial-red);
+    font-weight: 600;
+    min-height: 24px;
+    font-variant-numeric: tabular-nums;
+}
+.status-ready {
+    color: var(--color-core-green) !important;
+}
+.error-lead {
+    text-align: center;
+    color: var(--color-imperial-red);
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: var(--space-12);
+}
+.error-body {
+    text-align: center;
+    color: var(--color-ink-muted);
+}
+
+/* GÖRDÍTŐSÁV */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--color-space-deep); border-radius: var(--radius-sm); }
+::-webkit-scrollbar-thumb { background: var(--color-sw-yellow); border-radius: var(--radius-sm); }
+
+/* CSÖKKENTETT MOZGÁS */
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
     </style>
 </head>
 <body>
 
+    <!-- 1. JELSZÓ KÉPERNYŐ -->
     <div id="login-screen">
-        <h1>A Nagy Holokron</h1>
-        <p>A belépéshez add meg a galaxis legpusztítóbb varázsigéjét.</p>
-        <input type="password" id="password-input" placeholder="Jelszó">
-        <button class="btn" onclick="checkPassword()">Feloldás</button>
-        <div id="login-error">Hibás kód! Nem te vagy a kiválasztott.</div>
+        <div class="holocron-emitter" aria-hidden="true">
+            <div class="holocron-crystal"></div>
+        </div>
+        <div class="login-card">
+            <h1>A nagy holokron</h1>
+            <p>A belépéshez add meg a galaxis legpusztítóbb varázsigéjét.</p>
+            <input type="password" id="password-input" placeholder="Jelszó" autocomplete="off">
+            <button class="btn" onclick="checkPassword()">Feloldás</button>
+            <div id="login-error">Hibás kód! Nem te vagy a kiválasztott.</div>
+        </div>
     </div>
 
-    <!-- 1. Star Wars Animáció -->
+    <!-- PROLÓGUS KÁRTYA (STAR WARS HAGYOMÁNY) -->
+    <div id="prologue-card">
+        <div id="prologue-text" class="prologue-text">Réges-rég, egy messzi-messzi galaxisban…</div>
+    </div>
+
+    <!-- 2. STAR WARS ANIMÁCIÓ (CRAWL) -->
     <div id="crawl-screen">
-        <div class="fade"></div>
+        <div class="fade-overlay"></div>
         <div class="star-wars-container">
             <div id="crawl-text" class="crawl">
                 <div class="crawl-title">
-                    <h2>EPIZÓD XXV</h2>
-                    <h1>KATA GALAXISA</h1>
+                    <h1><span class="crawl-subtitle">Epizód XXV</span>Kata galaxisa</h1>
                 </div>
                 <p>A galaxis végtelen, de létezik egy szektor, ami minden másnál különlegesebb, a legfényesebb hullócsillagok sem érnek fel ehhez. Negyedszázad telt el, és ez a világ pontosan olyanná formálódott, amilyen te vagy.</p><br>
                 <p>Ez a kis virtuális holokron azért jött létre, hogy majd a szülinapozáson (IVÁS!) kívül egy másik módon is megünnepeljük azt a lányt, akinek galaxisa nélkül nem lenne teljes az univerzum. Azt az embert, akinek a lételeme a vita, és aki a vaksötét szobájában egy üveg Frittmannal a kezében, rezzenéstelen arccal nézi végig a bedőlt dél-amerikai foci vagy tenisz tipszmikszet.</p><br>
@@ -116,28 +678,31 @@
                 <p>Csak szállj be a Sólyomba, és fedezd fel a saját galaxisodat!</p>
             </div>
         </div>
-        <button id="skip-crawl-btn" class="btn" onclick="skipToStaticIntro()">Szöveg elolvasása &rarr;</button>
+        <button id="skip-crawl-btn" class="btn" onclick="skipToStaticIntro()">Szöveg elolvasása</button>
     </div>
 
-    <!-- 2. Statikus olvasható nézet -->
+    <!-- 3. STATIKUS OLVASHATÓ NÉZET -->
     <div id="static-intro-screen">
-        <div class="static-content">
-            <h2>EPIZÓD XXV</h2>
-            <h1>KATA GALAXISA</h1>
-            <p>A galaxis végtelen, de létezik egy szektor, ami minden másnál különlegesebb, a legfényesebb hullócsillagok sem érnek fel ehhez. Negyedszázad telt el, és ez a világ pontosan olyanná formálódott, amilyen te vagy.</p>
-            <p>Ez a kis virtuális holokron azért jött létre, hogy majd a szülinapozáson (IVÁS!) kívül egy másik módon is megünnepeljük azt a lányt, akinek galaxisa nélkül nem lenne teljes az univerzum. Azt az embert, akinek a lételeme a vita, és aki a vaksötét szobájában egy üveg Frittmannal a kezében, rezzenéstelen arccal nézi végig a bedőlt dél-amerikai foci vagy tenisz tipszmikszet.</p>
-            <p>Nem játszol szerepeket, képes vagy hajnalig vérre menő vitát folytatni, és a szókincsed egyik kedvenc - de legalábbis az egyik legtöbbször használt - szava az AFFUERA, ami felér egy harmadfoki, Kúria ítélettel.</p>
-            <p>Minden bolygó ebben a galaxisban egy-egy darabka a te zseniális “furcsaságaidból”. :)</p>
+        <div class="static-card">
+            <div class="static-header">
+                <h1>Epizód XXV: Kata galaxisa</h1>
+            </div>
+            <div class="static-content">
+                <p>A galaxis végtelen, de létezik egy szektor, ami minden másnál különlegesebb, a legfényesebb hullócsillagok sem érnek fel ehhez. Negyedszázad telt el, és ez a világ pontosan olyanná formálódott, amilyen te vagy.</p>
+                <p>Ez a kis virtuális holokron azért jött létre, hogy majd a szülinapozáson (IVÁS!) kívül egy másik módon is megünnepeljük azt a lányt, akinek galaxisa nélkül nem lenne teljes az univerzum. Azt az embert, akinek a lételeme a vita, és aki a vaksötét szobájában egy üveg Frittmannal a kezében, rezzenéstelen arccal nézi végig a bedőlt dél-amerikai foci vagy tenisz tipszmikszet.</p>
+                <p>Nem játszol szerepeket, képes vagy hajnalig vérre menő vitát folytatni, és a szókincsed egyik kedvenc - de legalábbis az egyik legtöbbször használt - szava az AFFUERA, ami felér egy harmadfoki, Kúria ítélettel.</p>
+                <p>Minden bolygó ebben a galaxisban egy-egy darabka a te zseniális “furcsaságaidból”. :)</p>
+            </div>
         </div>
-        <button class="btn" onclick="startGame()" style="margin-bottom: 30px;">Beszállás a Sólyomba &rarr;</button>
+        <button class="btn" onclick="startGame()">Beszállás a Sólyomba</button>
     </div>
 
-    <!-- 3. Játéktér -->
+    <!-- 4. JÁTÉKTÉR -->
     <div id="game-screen">
         <div id="ui-layer">
             <div class="instruction">
-                <strong>Irányítás:</strong> W A S D gombok<br>
-                <strong>Interakció:</strong> Repülj a bolygókhoz és nyomj 'E'-t (vagy kattints)!
+                <strong>Irányítás:</strong> W A S D gombok (vagy nyilak)<br>
+                <strong>Interakció:</strong> Repülj a bolygókhoz és nyomj 'E'-t!
             </div>
             <div id="progress-tracker">Felfedezett bolygók: 0 / 4</div>
         </div>
@@ -145,28 +710,28 @@
         <!-- Mobil irányító gombok -->
         <div id="mobile-controls">
             <div class="d-pad">
-                <div class="d-btn" id="btn-up">&#8593;</div>
-                <div class="d-btn" id="btn-left">&#8592;</div>
-                <div class="d-btn" id="btn-right">&#8594;</div>
-                <div class="d-btn" id="btn-down">&#8595;</div>
+                <div class="d-btn" id="btn-up" aria-label="Előre">&#8593;</div>
+                <div class="d-btn" id="btn-left" aria-label="Balra">&#8592;</div>
+                <div class="d-btn" id="btn-right" aria-label="Jobbra">&#8594;</div>
+                <div class="d-btn" id="btn-down" aria-label="Hátra">&#8595;</div>
             </div>
         </div>
 
         <div id="interaction-prompt" onclick="promptClicked()">Nyomd meg az 'E' gombot!</div>
-        <canvas id="gameCanvas"></canvas>
+        <canvas id="gameCanvas" role="img" aria-label="Kata galaxisa interaktív űrtérkép"></canvas>
     </div>
 
-    <!-- 4. Modal (Bolygó tartalma) -->
-    <div id="memory-modal">
-        <div id="modal-close" onclick="closeModal()">&times;</div>
+    <!-- 5. MODAL (BOLYGÓ TARTALMA) -->
+    <div id="memory-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div id="modal-close" onclick="closeModal()" aria-label="Bezárás">&times;</div>
         <h2 id="modal-title">Bolygó neve</h2>
         <div id="modal-content-area">
-            <img id="modal-image" class="planet-image" src="" alt="Kép">
+            <img id="modal-image" class="planet-image" src="pictures/frittmann.jpg" alt="Bolygó archívum">
             <div id="modal-text"></div>
             <div id="audio-status"></div>
             <!-- AUDIO TAG-EK A ZENÉKHEZ -->
             <audio id="intro-audio" style="display:none;" src="music/Intro.mp3"></audio>
-            <audio id="modal-audio" style="display:none;" src="#"></audio>
+            <audio id="modal-audio" style="display:none;" src="music/BringMeToLife.mp3"></audio>
         </div>
     </div>
 
@@ -177,7 +742,7 @@
             const input = document.getElementById('password-input').value.toLowerCase().trim();
             if(input === correctPassword || input === 'kata25') {
                 document.getElementById('login-screen').style.display = 'none';
-                startCrawl();
+                triggerPrologue();
             } else {
                 document.getElementById('login-error').style.display = 'block';
             }
@@ -187,6 +752,30 @@
             if (e.key === 'Enter') checkPassword();
         });
 
+        function triggerPrologue() {
+            const prologueCard = document.getElementById('prologue-card');
+            const prologueText = document.getElementById('prologue-text');
+            prologueCard.style.display = 'flex';
+            
+            setTimeout(() => {
+                prologueText.style.opacity = '1';
+            }, 100);
+
+            let prologueTimeout = setTimeout(() => {
+                prologueText.style.opacity = '0';
+                setTimeout(() => {
+                    prologueCard.style.display = 'none';
+                    startCrawl();
+                }, 800);
+            }, 2400);
+
+            prologueCard.addEventListener('click', () => {
+                clearTimeout(prologueTimeout);
+                prologueCard.style.display = 'none';
+                startCrawl();
+            }, { once: true });
+        }
+
         let crawlAnimation;
         let pos = window.innerHeight;
         
@@ -195,7 +784,7 @@
             
             // INTRO ZENE INDÍTÁSA
             const introAudio = document.getElementById('intro-audio');
-            introAudio.volume = 0.2;
+            introAudio.volume = 0.25;
             introAudio.play().catch(e => console.log("Intro audio autoplay letiltva."));
 
             const crawlText = document.getElementById('crawl-text');
@@ -228,7 +817,10 @@
         const shipImg = new Image();
         shipImg.src = 'pictures/urhajo.png';
 
-        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        function resizeCanvas() { 
+            canvas.width = window.innerWidth; 
+            canvas.height = window.innerHeight; 
+        }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
@@ -251,65 +843,82 @@
         addTouchEvents(btnUp, 'w'); addTouchEvents(btnDown, 's'); addTouchEvents(btnLeft, 'a'); addTouchEvents(btnRight, 'd');
 
         window.addEventListener('keydown', (e) => {
-            if(keys.hasOwnProperty(e.key.toLowerCase())) keys[e.key.toLowerCase()] = true;
-            if(e.key.toLowerCase() === 'e' && activePlanet && !isModalOpen) openModal(activePlanet);
-            // Zár visszaállítva, Escape nem működik, ha isAudioLocked === true
+            const keyLower = e.key.toLowerCase();
+            if(keys.hasOwnProperty(keyLower)) keys[keyLower] = true;
+            if(e.key === 'ArrowUp') keys.w = true;
+            if(e.key === 'ArrowDown') keys.s = true;
+            if(e.key === 'ArrowLeft') keys.a = true;
+            if(e.key === 'ArrowRight') keys.d = true;
+
+            if(keyLower === 'e' && activePlanet && !isModalOpen) openModal(activePlanet);
+            // Zár visszaállítva: Escape nem működik, ha isAudioLocked === true
             if(e.key === 'Escape' && isModalOpen && !isAudioLocked) closeModal(); 
         });
         window.addEventListener('keyup', (e) => {
-            if(keys.hasOwnProperty(e.key.toLowerCase())) keys[e.key.toLowerCase()] = false;
+            const keyLower = e.key.toLowerCase();
+            if(keys.hasOwnProperty(keyLower)) keys[keyLower] = false;
+            if(e.key === 'ArrowUp') keys.w = false;
+            if(e.key === 'ArrowDown') keys.s = false;
+            if(e.key === 'ArrowLeft') keys.a = false;
+            if(e.key === 'ArrowRight') keys.d = false;
         });
 
         function promptClicked() {
             if(activePlanet && !isModalOpen) openModal(activePlanet);
         }
 
-        const player = { x: canvas.width / 2, y: canvas.height / 2 + 200, size: 20, speed: 2, angle: -Math.PI/2 };
-        if(window.innerWidth < 768) { player.size = 15; player.speed = 1.5; }
+        const player = { x: canvas.width / 2, y: canvas.height / 2 + 200, size: 22, speed: 2.2, angle: -Math.PI/2 };
+        if(window.innerWidth < 768) { player.size = 17; player.speed = 1.6; }
 
         const planets = [
             {
-                id: 1, x: canvas.width * 0.2, y: canvas.height * 0.2, radius: 45, color: '#ff3333',
+                id: 1, x: canvas.width * 0.2, y: canvas.height * 0.22, radius: 46, 
+                color: '#e74c3c', ringColor: '#ff7675', glowColor: 'rgba(231, 76, 60, 0.4)',
                 title: '1. Bolygó: A legfelsőbb bíróság (Az AFFUERA szektor)',
                 img: '', audio: 'music/BringMeToLife.mp3', 
                 text: '<p>Üdv a galaxis legkeményebb tárgyalótermében! Ide bárki beléphet egy jó vitára, a szabályok viszont egyértelműek: te vagy a bíró.</p><p>Amikor olyat hallasz, ami nem tetszik, nincs helye a fellebbezésnek. Csak lecsap a kalapács, és jön a végső ítélet: <strong>AFFUERA!</strong></p><p>Az ajtót egyedül is megtalálja aki hülyeséget mondott.</p>'
             },
             {
-                id: 2, x: canvas.width * 0.8, y: canvas.height * 0.25, radius: 50, color: '#1a1a2e',
+                id: 2, x: canvas.width * 0.8, y: canvas.height * 0.26, radius: 50, 
+                color: '#2980b9', ringColor: '#74b9ff', glowColor: 'rgba(41, 128, 185, 0.4)',
                 title: '2. Bolygó: A sötét szoba (A Szentély)',
                 img: '', audio: 'music/Children.mp3', 
                 text: '<p>A béke szigete. Itt sosincs nappal, a sötétséget csak a PS5 és egy focimeccs, egy sorozat, vagy éppen a CHATY fénye töri meg.</p><p>Amikor pedig elmegy a tuti szelvény, nem repül a kontroller. Csak tudomásul veszed és már jöhet is a <em>bor</em>.</p><p>Habár attól a lyuktól a falon igazán egyedi a szobád, hamarosan megcsináljuk azt is és a fehér egyik árnyalatával kifestjük a szentélyed.</p>'
             },
             {
-                id: 3, x: canvas.width * 0.3, y: canvas.height * 0.7, radius: 40, color: '#ffaa00',
+                id: 3, x: canvas.width * 0.28, y: canvas.height * 0.72, radius: 42, hasRing: true,
+                color: '#f39c12', ringColor: '#ffeaa7', glowColor: 'rgba(243, 156, 18, 0.4)',
                 title: '3. Bolygó: A törvényen kívüli ruházat (A közgáz lázadás)',
                 img: '', audio: 'music/RedEye.mp3', 
                 text: '<p>A véget nem érő viták hazája. A bolygó alaptörvénye kimondja: <em>"A ruha NEM létszükséglet." (Vestis non est ad vivendum necessaria)</em>.</p><p>Hiába mond mást a hivatalos közgáz érettségi megoldókulcsa, te hajnalig képes lennél vitatkozni azon, hogy a rendszer téved - de csakis egy kis bor társaságában.</p><p>Itt hajnalokig lehet vitatkozni, de csak és kizárólag ész érvekkel, az érzelmek itt nem hatnak. Aki nem ért veled egyet, annak AFFUERA van.</p>'
             },
             {
-                id: 4, x: canvas.width * 0.7, y: canvas.height * 0.75, radius: 45, color: '#aaddaa',
+                id: 4, x: canvas.width * 0.72, y: canvas.height * 0.76, radius: 46, 
+                color: '#27ae60', ringColor: '#55efc4', glowColor: 'rgba(39, 174, 96, 0.4)',
                 title: '4. Bolygó: A Frittmann-köd (Az akciós zóna)',
                 img: 'pictures/frittmann.jpg', audio: 'music/YourTouch.mp3', 
                 text: '<p>Itt az olcsó a király. A felszínen kristálytiszta, alsópolcos Frittmann folyik a folyókban, minden szigorúan akciós és a fák levelei lejárat nélküli kuponok.</p><p>Egyébként is minek fenszizni, ha a célnak ez is tökéletesen megfelel? Emeljük poharunkat a racionalitásra!</p>'
             },
             {
-                id: 5, x: canvas.width / 2, y: canvas.height / 2, radius: 60, color: '#bb55ff', locked: true,
+                id: 5, x: canvas.width / 2, y: canvas.height / 2, radius: 62, locked: true,
+                color: '#8e44ad', ringColor: '#a29bfe', glowColor: 'rgba(142, 68, 173, 0.45)',
                 title: '5. Bolygó: A 25. évforduló (A Nagy Holokron)',
                 img: '', audio: 'music/TwentyEight.mp3', 
                 text: '<p>25 éves lett a galaxisod, ami a története során sok mindent látott már, győztes és vesztes űrcsatákat. Ezek formálták a Te galaxisod, ami pontosan így lett tökéletes. Ez a digitális holokron sokkal többet tartalmaz, mint amennyit most megmutatott neked.</p><p>Azonban ahhoz, hogy lássuk milyen lesz a következő 1 év, most nem áll rendelkezésünkre egy, az ellenséges oldali holokron vagy force vision.</p><p>Ettől függetlenül remélem és kívánom, hogy csodálatos lesz és legyen!</p><h3 style="text-align: center;">Boldog születésnapot!</h3><h2 style="text-align: center; margin-top: 20px;">May the 25th be with you!</h2>'
             }
         ];
         
-        if(window.innerWidth < 768) { planets.forEach(p => p.radius *= 0.7); }
+        if(window.innerWidth < 768) { planets.forEach(p => p.radius *= 0.72); }
 
-        // CSILLAGOK BEÁLLÍTÁSA (dinamikus villogás meghagyva)
-        const stars = Array.from({length: 200}, () => ({ 
+        // CSILLAGOK RÉTEGEZETT CSOMAGJA
+        const stars = Array.from({length: 220}, () => ({ 
             x: Math.random() * 2000, 
             y: Math.random() * 2000, 
-            size: Math.random() * 2, 
-            speed: Math.random() * 0.5,
+            size: Math.random() * 2.2 + 0.4, 
+            speed: (Math.random() * 0.4) + 0.1,
             alpha: Math.random(), 
-            fadeSpeed: (Math.random() * 0.03) + 0.01 
+            fadeSpeed: (Math.random() * 0.025) + 0.008,
+            hue: Math.random() > 0.8 ? (Math.random() > 0.5 ? '200, 230, 255' : '255, 240, 180') : '255, 255, 255'
         }));
 
         function startGame() {
@@ -327,7 +936,7 @@
 
         function update() {
             if(!isGameRunning || isModalOpen) return;
-            
+
             if (keys.w) player.y -= player.speed; 
             if (keys.s) player.y += player.speed;
             if (keys.a) player.x -= player.speed; 
@@ -355,75 +964,158 @@
                 if(s.x<0) s.x=canvas.width; if(s.x>canvas.width) s.x=0; 
                 if(s.y<0) s.y=canvas.height; if(s.y>canvas.height) s.y=0; 
                 
-                // CSILLOGÁSI EFFEKT LOGIKA
+                // CSILLOGÁSI EFFEKT
                 s.alpha += s.fadeSpeed;
-                if (s.alpha > 1 || s.alpha < 0) s.fadeSpeed *= -1;
+                if (s.alpha > 1 || s.alpha < 0.1) s.fadeSpeed *= -1;
             });
 
-            activePlanet = planets.find(p => getDistance(player.x, player.y, p.x, p.y) < p.radius + 30) || null;
+            activePlanet = planets.find(p => getDistance(player.x, player.y, p.x, p.y) < p.radius + 35) || null;
             const prompt = document.getElementById('interaction-prompt');
             prompt.style.display = activePlanet ? 'block' : 'none';
             if(activePlanet) {
-                const actionText = (window.innerWidth < 768) ? "KATTINTS IDE!" : "[E]";
+                const actionText = (window.innerWidth < 768) ? "Érintsd meg:" : "[E] Dokkolás:";
                 if(activePlanet.id === 5 && visitedPlanets.size < 4) {
-                    prompt.innerHTML = `${actionText} ${activePlanet.title} (ZÁROLVA)`;
-                    prompt.style.borderColor = '#ff3333';
+                    prompt.innerHTML = `${actionText} ${activePlanet.title} <span class="badge-locked">[Pajzs aktív]</span>`;
+                    prompt.style.borderColor = 'var(--color-imperial-red)';
                 } else {
                     prompt.innerHTML = `${actionText} ${activePlanet.title}`;
-                    prompt.style.borderColor = '#ffe81f';
+                    prompt.style.borderColor = 'var(--color-sw-yellow)';
                 }
             }
         }
 
         function draw() {
-            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // MÉLYŰR HÁTTÉR
+            ctx.fillStyle = '#080b12'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // CSILLAGOK RAJZOLÁSA AZ ÁTLÁTSZÓSÁGGAL
+            // CSILLAGOK RAJZOLÁSA
             stars.forEach(s => { 
-                ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(s.alpha)})`; 
+                ctx.fillStyle = `rgba(${s.hue}, ${Math.max(0.1, Math.min(1, Math.abs(s.alpha)))})`; 
                 ctx.beginPath(); 
                 ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); 
                 ctx.fill(); 
             });
 
+            // BOLYGÓK MEGJELENÍTÉSE
             planets.forEach(p => {
                 const isLockedFinalPlanet = (p.id === 5 && visitedPlanets.size < 4);
-                const actualColor = isLockedFinalPlanet ? '#555555' : p.color;
+                const actualColor = isLockedFinalPlanet ? '#4a4f5c' : p.color;
+                const glowCol = isLockedFinalPlanet ? 'rgba(255, 51, 51, 0.35)' : p.glowColor;
 
-                const grad = ctx.createRadialGradient(p.x, p.y, p.radius*0.5, p.x, p.y, p.radius*1.5);
-                grad.addColorStop(0, actualColor); grad.addColorStop(1, 'transparent');
-                
-                ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(p.x, p.y, p.radius*1.5, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = actualColor; ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2); ctx.fill();
-                
-                if(isLockedFinalPlanet) {
-                    ctx.strokeStyle = '#ff3333'; ctx.lineWidth = 4; ctx.beginPath();
-                    ctx.moveTo(p.x - 10, p.y - 10); ctx.lineTo(p.x + 10, p.y + 10);
-                    ctx.moveTo(p.x + 10, p.y - 10); ctx.lineTo(p.x - 10, p.y + 10); ctx.stroke();
+                // 1. KORONA / LÉGKÖR RAGYOGÁS
+                const gradGlow = ctx.createRadialGradient(p.x, p.y, p.radius * 0.7, p.x, p.y, p.radius * 1.6);
+                gradGlow.addColorStop(0, glowCol);
+                gradGlow.addColorStop(1, 'transparent');
+                ctx.fillStyle = gradGlow; 
+                ctx.beginPath(); 
+                ctx.arc(p.x, p.y, p.radius * 1.6, 0, Math.PI*2); 
+                ctx.fill();
+
+                // 2. BOLYGÓ TESTE ÁRNYÉKKAL ÉS TERMINÁTOR GÖRBE
+                const planetGrad = ctx.createRadialGradient(
+                    p.x - p.radius * 0.35, 
+                    p.y - p.radius * 0.35, 
+                    p.radius * 0.1, 
+                    p.x, 
+                    p.y, 
+                    p.radius
+                );
+                planetGrad.addColorStop(0, isLockedFinalPlanet ? '#717887' : p.ringColor);
+                planetGrad.addColorStop(0.65, actualColor);
+                planetGrad.addColorStop(1, '#05070a');
+
+                ctx.fillStyle = planetGrad; 
+                ctx.beginPath(); 
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2); 
+                ctx.fill();
+
+                // 3. GYŰRŰRENDSZER (HA VAN)
+                if(p.hasRing) {
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(-Math.PI / 6);
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, p.radius * 1.8, p.radius * 0.45, 0, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(255, 234, 167, 0.4)';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                    ctx.restore();
                 }
 
+                // 4. ZÁROLT 5. BOLYGÓ VÉDELMI PAJZS
+                if(isLockedFinalPlanet) {
+                    const time = Date.now() / 600;
+                    ctx.save();
+                    ctx.strokeStyle = '#ff3333';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([8, 6]);
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius + 8, time, time + Math.PI * 2);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                // 5. CÉLZÓKERET AKTÍV BOLYGÓNÁL (STAR WARS HUD)
                 if(activePlanet === p) { 
-                    ctx.strokeStyle = isLockedFinalPlanet ? '#ff3333' : '#ffe81f'; 
-                    ctx.lineWidth = 2; ctx.beginPath(); 
-                    ctx.arc(p.x, p.y, p.radius+15+Math.sin(Date.now()/150)*5, 0, Math.PI*2); ctx.stroke(); 
+                    const reticleColor = isLockedFinalPlanet ? '#ff3333' : '#ffe81f';
+                    const retSize = p.radius + 16 + Math.sin(Date.now() / 160) * 3;
+                    
+                    ctx.strokeStyle = reticleColor; 
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, retSize, 0, Math.PI * 2);
+                    ctx.stroke();
+
+                    // Koordináta jelölő vonalak
+                    ctx.beginPath();
+                    ctx.moveTo(p.x - retSize - 8, p.y); ctx.lineTo(p.x - retSize + 4, p.y);
+                    ctx.moveTo(p.x + retSize + 8, p.y); ctx.lineTo(p.x + retSize - 4, p.y);
+                    ctx.moveTo(p.x, p.y - retSize - 8); ctx.lineTo(p.x, p.y - retSize + 4);
+                    ctx.moveTo(p.x, p.y + retSize + 8); ctx.lineTo(p.x, p.y + retSize - 4);
+                    ctx.stroke();
                 }
             });
 
+            // MILLENNIUM FALCON ÉS ION HAJTÓMŰ CSILLOGÁS
             ctx.save(); 
             ctx.translate(player.x, player.y); 
             ctx.rotate(player.angle);
+
+            const isThrusting = (keys.w || keys.s || keys.a || keys.d);
+
+            // KÉK ION HAJTÓMŰ LÁNG
+            if(isThrusting) {
+                const flameLength = player.size * 0.9 + Math.random() * 8;
+                ctx.fillStyle = 'rgba(75, 213, 238, 0.85)';
+                ctx.beginPath();
+                ctx.moveTo(-player.size * 0.8, -player.size * 0.25);
+                ctx.lineTo(-player.size * 0.8 - flameLength, 0);
+                ctx.lineTo(-player.size * 0.8, player.size * 0.25);
+                ctx.closePath();
+                ctx.fill();
+            }
 
             if(shipImg.complete && shipImg.naturalWidth !== 0) {
                 ctx.rotate(Math.PI/2);
                 ctx.drawImage(shipImg, -player.size, -player.size, player.size*2, player.size*2);
             } else {
-                if(keys.w||keys.a||keys.s||keys.d) { ctx.fillStyle='#f90'; ctx.beginPath(); ctx.moveTo(-player.size+5,0); ctx.lineTo(-player.size-15,-5); ctx.lineTo(-player.size-15,5); ctx.fill(); }
-                ctx.fillStyle = '#ddd'; ctx.beginPath(); ctx.moveTo(player.size,0); ctx.lineTo(-player.size,player.size); ctx.lineTo(-player.size+10,0); ctx.lineTo(-player.size,-player.size); ctx.fill();
+                ctx.fillStyle = '#cfd9e8'; 
+                ctx.beginPath(); 
+                ctx.moveTo(player.size, 0); 
+                ctx.lineTo(-player.size, player.size * 0.8); 
+                ctx.lineTo(-player.size * 0.5, 0); 
+                ctx.lineTo(-player.size, -player.size * 0.8); 
+                ctx.fill();
             }
             ctx.restore();
         }
 
-        function gameLoop() { update(); draw(); if(isGameRunning) requestAnimationFrame(gameLoop); }
+        function gameLoop() { 
+            update(); 
+            draw(); 
+            if(isGameRunning) requestAnimationFrame(gameLoop); 
+        }
 
         const audioEl = document.getElementById('modal-audio');
         const statusEl = document.getElementById('audio-status');
@@ -436,12 +1128,13 @@
             
             if (planet.id === 5 && visitedPlanets.size < 4) {
                 modal.classList.add('error-modal');
-                document.getElementById('modal-title').innerText = "Hozzáférés Megtagadva!";
+                document.getElementById('modal-title').innerText = "Hozzáférés megtagadva!";
                 document.getElementById('modal-text').innerHTML = `
-                    <p style="text-align:center; color:#ff3333; font-size:1.5rem;">Ez a bolygó még nem áll készen a fogadásodra.</p>
-                    <p style="text-align:center;">Még <strong>${4 - visitedPlanets.size}</strong> másik bolygót kell felfedezned a galaxisban, hogy megnyisd a Nagy Holokront.</p>`;
+                    <div class="error-lead">Ez a bolygó még nem áll készen a fogadásodra.</div>
+                    <p class="error-body">Még <strong>${4 - visitedPlanets.size}</strong> másik bolygót kell felfedezned a galaxisban a Nagy Holokron védelmi pajzsának feloldásához.</p>`;
                 document.getElementById('modal-image').style.display = 'none';
-                statusEl.innerText = ""; closeBtn.style.display = 'block';
+                statusEl.innerText = ""; 
+                closeBtn.style.display = 'block';
             } else {
                 modal.classList.remove('error-modal');
                 document.getElementById('modal-title').innerText = planet.title;
@@ -451,28 +1144,40 @@
                     visitedPlanets.add(planet.id);
                     document.getElementById('progress-tracker').innerText = `Felfedezett bolygók: ${visitedPlanets.size} / 4`;
                     if(visitedPlanets.size === 4) {
-                        document.getElementById('progress-tracker').style.borderColor = '#33ff33';
-                        document.getElementById('progress-tracker').style.color = '#33ff33';
+                        document.getElementById('progress-tracker').style.borderColor = 'var(--color-core-green)';
+                        document.getElementById('progress-tracker').style.color = 'var(--color-core-green)';
                         document.getElementById('progress-tracker').innerText += " - A NAGY HOLOKRON FELOLDVA!";
                     }
                 }
 
                 const imgEl = document.getElementById('modal-image');
-                if(planet.img) { imgEl.src = planet.img; imgEl.style.display = 'block'; } else { imgEl.style.display = 'none'; }
+                if(planet.img) { 
+                    imgEl.src = planet.img; 
+                    imgEl.style.display = 'block'; 
+                } else { 
+                    imgEl.style.display = 'none'; 
+                }
                 
                 if(planet.audio) { 
                     audioEl.src = planet.audio; 
-                    audioEl.volume = 0.2;
+                    audioEl.volume = 0.25;
                     
-                    // ZENE-ZÁR VISSZAÁLLÍTÁSA (Nem lehet bezárni a modal-t)
+                    // ZENE-ZÁR: Amíg a zene szól, az adás aktív
                     isAudioLocked = true;
                     closeBtn.style.display = 'none'; 
-                    statusEl.style.color = '#ff3333'; 
-                    statusEl.innerText = "Emlék letöltése és zene indítása...";
+                    statusEl.classList.remove('status-ready');
+                    statusEl.innerText = "Adatfolyam vétele és zene indítása…";
                     
-                    audioEl.play().catch(e => { isAudioLocked = false; closeBtn.style.display = 'block'; statusEl.innerText = ""; }); 
+                    audioEl.play().catch(e => { 
+                        isAudioLocked = false; 
+                        closeBtn.style.display = 'block'; 
+                        statusEl.innerText = ""; 
+                    }); 
                 } else { 
-                    isAudioLocked = false; closeBtn.style.display = 'block'; statusEl.innerText = ""; audioEl.pause(); 
+                    isAudioLocked = false; 
+                    closeBtn.style.display = 'block'; 
+                    statusEl.innerText = ""; 
+                    audioEl.pause(); 
                 }
             }
             modal.classList.add('active');
@@ -483,24 +1188,27 @@
             const timeLeft = audioEl.duration - audioEl.currentTime;
             
             if (timeLeft <= 1.0 && timeLeft >= 0) {
-                audioEl.volume = Math.max(0, 0.2 * timeLeft); // Fade out utolsó 1 mp
+                audioEl.volume = Math.max(0, 0.25 * timeLeft); // Fade out utolsó 1 mp
             }
             
-            const formatTime = (time) => { const m = Math.floor(time / 60).toString().padStart(2, '0'); const s = Math.floor(time % 60).toString().padStart(2, '0'); return `${m}:${s}`; };
+            const formatTime = (time) => { 
+                const m = Math.floor(time / 60).toString().padStart(2, '0'); 
+                const s = Math.floor(time % 60).toString().padStart(2, '0'); 
+                return `${m}:${s}`; 
+            };
             
-            // Szöveg visszaállítva a zárolt állapothoz
             statusEl.innerText = `A bolygó hamarosan elhagyható:  ${formatTime(audioEl.currentTime)} / ${formatTime(audioEl.duration)}`;
         });
 
         audioEl.addEventListener('ended', () => {
             isAudioLocked = false;
             closeBtn.style.display = 'block'; 
-            statusEl.style.color = '#33ff33';
-            statusEl.innerText = "A bolygó elhagyható.";
+            statusEl.classList.add('status-ready');
+            statusEl.innerText = "Adatátvitel befejeződött · A bolygó elhagyható.";
         });
 
         function closeModal() {
-            // ZENE-ZÁR VISSZAÁLLÍTÁSA: Megakadályozza a kilépést, ha még megy a zene
+            // ZENE-ZÁR: Megakadályozza a kilépést, ha még megy a zene
             if(isAudioLocked) return; 
             isModalOpen = false;
             document.getElementById('memory-modal').classList.remove('active');
